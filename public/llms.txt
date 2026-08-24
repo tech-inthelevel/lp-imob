@@ -1,0 +1,28 @@
+# JSYNQ Imob
+
+> Workspace com Agente de IA para corretores e imobiliárias. Enquanto o corretor mostra um imóvel, a IA já respondeu, qualificou e agendou o próximo lead — por WhatsApp, Instagram e SMS.
+
+JSYNQ Imob atende automaticamente os leads de uma imobiliária pelos principais canais (WhatsApp, Instagram, SMS) em até 10 segundos, qualifica o interesse e orçamento, preenche o CRM sozinho, faz follow-up de visitas e mantém um histórico completo e rastreável de cada negociação. Não há checkout ou planos nesta página — o contato acontece por WhatsApp ou por um formulário (modal de contato).
+
+## O que faz
+
+- **Resposta automática multicanal**: WhatsApp, Instagram e SMS, em até 10 segundos
+- **CRM automático**: a IA identifica orçamento, localização e urgência a partir da conversa
+- **Follow-up de leads**: lembra visitas, envia imóveis compatíveis, mantém o comprador engajado
+- **Relatórios e insights**: origem dos melhores leads, o que buscam, quais abordagens fecham mais visitas
+- **Histórico rastreável**: timeline única por lead, visível para qualquer corretor que assuma o atendimento
+
+## Como funciona esta página
+
+- Não há cadastro de conta nem cobrança nesta LP — os CTAs abrem um formulário de contato (modal) ou o WhatsApp.
+- Idiomas suportados: português (Brasil), inglês, espanhol.
+
+## Contato
+
+- WhatsApp: link flutuante disponível na página.
+- Formulário: modal de contato acessível pelos botões "Começar Teste Grátis" da página.
+
+## Links
+
+- Landing: https://imob.jsynq.com/
+- Sitemap: https://imob.jsynq.com/sitemap.xml

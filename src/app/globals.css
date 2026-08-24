@@ -1,0 +1,2694 @@
+:root {
+  /* JSYNQ Brand Tokens (Figma: Brand assets / 1 - Colors) */
+  --primary-100: #f8fffc;
+  --primary-200: #eef7f3;
+  --primary-300: #c7e6d8;
+  --primary-400: #afdbc7;
+  --primary-500: #8fceb2;
+  --primary-600: #45ad7e;
+  --primary-700: #29684c;
+  --primary-800: #1b4a35;
+  --primary-900: #153426;
+  --primary-1000: #13231c;
+
+  --neutral-10: #f6f6fa;
+  --neutral-50: #e4e4e9;
+  --neutral-100: #bbb9c7;
+  --neutral-200: #888599;
+  --neutral-300: #737185;
+  --neutral-400: #605e70;
+  --neutral-500: #4d4b5c;
+  --neutral-600: #3a3847;
+  --neutral-700: #282733;
+  --neutral-800: #17161e;
+  --neutral-900: #040405;
+
+  --secondary-clean: #f0f0f1;
+  --secondary-light: #888c8e;
+  --secondary-default: #555a5e;
+  --secondary-dark: #2b2d2f;
+  --secondary-darkest: #191b1c;
+
+  --green: var(--primary-600);
+  --green-600: var(--primary-700);
+  --green-50: var(--primary-200);
+  --ink: var(--secondary-darkest);
+  --ink-2: var(--secondary-default);
+  --muted: #686b6d;
+  /* darkened from #888c8e for WCAG AA (>=4.5:1 on white and bg-alt) */
+  --line: var(--neutral-50);
+  --bg: #FFFFFF;
+  --bg-alt: var(--neutral-10);
+  --white: #FFFFFF;
+
+  /* Radius scale — capped at 8px (workspace uses subtle corners) */
+  --radius-xs: 4px;
+  /* inputs, small chips */
+  --radius-sm: 6px;
+  /* nav container, mockups */
+  --radius: 8px;
+  /* cards */
+  --radius-lg: 8px;
+  /* large cards, plans */
+  --radius-xl: 8px;
+  /* hero panels, tables */
+
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, .05);
+  --shadow-sm: 0 4px 12px rgba(0, 0, 0, .08);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, .12);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, .15);
+
+  --maxw: 1180px;
+  /* Imob LP frame width (Figma Dev Spec: 1440px, side padding 80px/130px) */
+  --imob-maxw: 1440px;
+
+  /* AI orchestrator gradient (Figma: JSYNQ AI badge) */
+  --ai-1: #FF7575;
+  --ai-2: #13DB99;
+  --ai-3: #5CA9F0;
+  --ai-stroke: #8A38F5;
+  --ai-gradient: linear-gradient(135deg, #FF7575 0%, #13DB99 45%, #13DB99 60%, #5CA9F0 100%);
+  --ai-gradient-soft: linear-gradient(135deg, rgba(255, 117, 117, .12), rgba(19, 219, 153, .12) 50%, rgba(92, 169, 240, .12));
+
+  /* Imob LP accent tokens (Figma Dev Spec: 2. PALETA DE CORES) */
+  --success-default: #10B981;
+  --success-dark: #059669;
+  --success-darkest: #053727;
+  --success-light: #58CEA7;
+  --success-clean: #D3F8E9;
+  --warning-lighter: #FFE48C;
+  --warning-clean: #FEF2CA;
+  --info-lighter: #DBEFFF;
+  --error-darkest: #B91C1C;
+  --mono-ink: #111827;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: clip;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  color: var(--ink);
+  background: var(--bg);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: clip;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+::selection {
+  background: rgba(69, 173, 126, .25);
+  color: var(--ink);
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+ul {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.container {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 24px;
+  position: relative;
+}
+
+.container--narrow {
+  max-width: 820px;
+}
+
+.text-accent {
+  color: var(--green);
+}
+
+.muted {
+  color: var(--muted);
+}
+
+/* Reveal on scroll: initial hidden state; RevealManager (GSAP + ScrollTrigger)
+   animates opacity/transform in and overrides these inline. */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(24px);
+}
+
+/* Cinematic scroll effects (ScrollFx): initial hidden states before GSAP
+   takes over via inline styles. Kept minimal so a no-JS fallback isn't
+   permanently invisible in spirit — see RevealManager's note. */
+[data-fx="zoom-in"] {
+  opacity: 0;
+  transform: scale(0.85);
+}
+
+[data-fx="slide-left"] {
+  opacity: 0;
+  transform: translateX(-56px);
+}
+
+[data-fx="slide-right"] {
+  opacity: 0;
+  transform: translateX(56px);
+}
+
+[data-fx="mask-title"] {
+  opacity: 0.15;
+  transform: scale(0.8);
+  filter: blur(8px);
+}
+
+[data-fx="card"] {
+  opacity: 0;
+  transform: translateY(64px) scale(0.92);
+}
+
+[data-fx="reports"] {
+  opacity: 0;
+  transform: translate(-6%, 10%) scale(0.82) rotate(-7deg);
+}
+
+/* AI-card "parts assembling" pieces — see ScrollFx's setupAiAssembly */
+[data-fx="zoom-in"] .imob-feature-ai__avatar,
+[data-fx="zoom-in"] .imob-feature-ai__pill,
+[data-fx="zoom-in"] .imob-feature-ai__core,
+[data-fx="zoom-in"] .imob-feature-ai__line {
+  opacity: 0;
+}
+
+/* Eyebrow */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--green);
+  background: var(--green-50);
+  padding: 7px 12px;
+  border-radius: 999px;
+  margin-bottom: 16px;
+}
+
+.eyebrow--ai {
+  background: rgba(255, 255, 255, .06);
+  color: rgba(255, 255, 255, .85);
+  border: 1px solid rgba(255, 255, 255, .08);
+}
+
+.eyebrow--ai .eyebrow__icon {
+  width: 14px;
+  height: 14px;
+  color: var(--ai-2);
+}
+
+/* BUTTONS */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 10px 16px;
+  border-radius: var(--radius-xs);
+  transition: transform .25s var(--ease-out), background .2s var(--ease-out), color .2s var(--ease-out), border-color .2s var(--ease-out), box-shadow .25s var(--ease-out);
+  border: 1px solid transparent;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.btn:active {
+  transform: translateY(1px) scale(.985);
+  transition-duration: .08s;
+}
+
+.btn--lg {
+  padding: 14px 22px;
+  font-size: 15px;
+  border-radius: var(--radius-xs);
+}
+
+.btn--block {
+  width: 100%;
+}
+
+.btn--icon {
+  padding: 8px !important;
+  min-width: 44px;
+  min-height: 44px;
+  background: transparent !important;
+  border: none !important;
+  color: var(--ink);
+  font-size: 0;
+  transition: color .2s var(--ease-out);
+}
+
+.btn--icon:hover {
+  color: var(--green);
+}
+
+.btn--primary {
+  background: var(--green);
+  /* near-black text on brand green = 7.35:1 (WCAG AA) instead of white (2.79:1) */
+  color: #040405;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, .15);
+}
+
+.btn--primary:hover {
+  /* lighten on hover (not darken) so the near-black text keeps contrast (8.36:1) */
+  background: #50b88a;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, .2);
+}
+
+.btn--primary svg {
+  transition: transform .25s var(--ease-out);
+}
+
+.btn--primary:hover svg {
+  transform: translateX(3px);
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--ink);
+  border-color: var(--line);
+}
+
+.btn--ghost:hover {
+  border-color: var(--ink);
+  background: var(--bg-alt);
+}
+
+/* LANGUAGE SELECTOR */
+.lang {
+  position: relative;
+}
+
+.lang__menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-sm);
+  min-width: 140px;
+  padding: 4px;
+  opacity: 0;
+  transform: translateY(-6px);
+  pointer-events: none;
+  transition: opacity .18s var(--ease-out), transform .18s var(--ease-out);
+}
+
+.lang__menu.open {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+.lang__menu li {
+  padding: 8px 10px;
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.lang__menu li:hover {
+  background: var(--bg-alt);
+  color: var(--green);
+}
+
+/* LEGAL PAGES */
+.legal-page {
+  padding: 120px 0 80px;
+  min-height: 70vh;
+}
+
+.legal-page .container {
+  max-width: 760px;
+}
+
+.legal-page h1 {
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0 0 8px;
+}
+
+.legal-page__updated {
+  font-size: 13px;
+  color: var(--muted);
+  margin: 0 0 48px;
+}
+
+.legal-page section {
+  margin-bottom: 36px;
+}
+
+.legal-page h2 {
+  font-size: 17px;
+  font-weight: 600;
+  margin: 0 0 10px;
+  color: var(--ink);
+}
+
+.legal-page p,
+.legal-page li {
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--ink-2);
+}
+
+.legal-page ul {
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 8px 0 0;
+}
+
+.legal-page a {
+  color: var(--brand);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* WHATSAPP FLOATING BUTTON */
+.wa-fab {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 60;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #25d366;
+  color: #fff;
+  box-shadow: 0 10px 28px -8px rgba(16, 24, 40, .22);
+  transition: transform .25s var(--ease-out), box-shadow .25s var(--ease-out);
+}
+
+.wa-fab:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 14px 34px -8px rgba(16, 24, 40, .28);
+}
+
+.wa-fab__icon {
+  width: 30px;
+  height: 30px;
+}
+
+/* visually hidden, kept for screen readers */
+.wa-fab__label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Lift above the mobile sticky CTA bar on phones */
+@media (max-width: 640px) {
+  .wa-fab {
+    right: 16px;
+    bottom: 84px;
+    width: 52px;
+    height: 52px;
+  }
+
+  .wa-fab__icon {
+    width: 28px;
+    height: 28px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wa-fab,
+  .wa-fab:hover {
+    transition: none;
+    transform: none;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   CONTACT MODAL
+   ───────────────────────────────────────────────────────────── */
+body.modal-open {
+  overflow: hidden;
+}
+
+.cmodal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  justify-content: flex-end;
+  background: rgba(10, 10, 16, .55);
+  backdrop-filter: blur(6px);
+  animation: cmodal-fade .2s var(--ease-out);
+}
+
+/* Right-side drawer: full height, slides in from the right edge */
+.cmodal__dialog {
+  position: relative;
+  width: min(460px, 100vw);
+  height: 100dvh;
+  overflow-y: auto;
+  background: var(--white);
+  border-left: 1px solid var(--line);
+  padding: 32px;
+  animation: cmodal-slide .35s var(--ease-out);
+}
+
+.cmodal__close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-xs);
+  background: transparent;
+  border: none;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: background .2s var(--ease-out), color .2s var(--ease-out);
+}
+
+.cmodal__close:hover {
+  background: var(--bg-alt);
+  color: var(--ink);
+}
+
+/* Embed variant: full-bleed iframe (the embedded form provides its own title).
+   The close button floats over the iframe as a circular control. */
+.cmodal__dialog--embed {
+  padding: 0;
+}
+
+.cmodal__embed {
+  display: block;
+  width: 100%;
+  min-height: 100%;
+  border: 0;
+  background: var(--white);
+}
+
+.cmodal__dialog--embed .cmodal__close {
+  z-index: 1;
+  background: rgba(255, 255, 255, .9);
+  border-radius: 50%;
+  box-shadow: 0 1px 4px rgba(16, 24, 40, .14);
+}
+
+@keyframes cmodal-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes cmodal-slide {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+@media (max-width: 640px) {
+  /* Full-screen drawer from the right on phones */
+  .cmodal__dialog {
+    padding: 28px 18px calc(28px + env(safe-area-inset-bottom));
+  }
+
+  .cmodal__dialog--embed {
+    padding: 0 0 calc(env(safe-area-inset-bottom)) 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cmodal,
+  .cmodal__dialog {
+    animation: none;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   A11Y: green TEXT on light backgrounds uses the darker brand green
+   (--green-600 #29684c = 6.61:1) to meet WCAG AA. The bright --green
+   stays for icons, fills, and dark sections (where .section--dark
+   overrides keep higher specificity / white text).
+   ───────────────────────────────────────────────────────────── */
+/* ─────────────────────────────────────────────────────────────
+   COOKIE CONSENT (LGPD/GDPR)
+   ───────────────────────────────────────────────────────────── */
+.cookie {
+  position: fixed;
+  left: 20px;
+  bottom: 20px;
+  z-index: 80;
+  width: min(380px, calc(100vw - 40px));
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: 0 12px 32px -10px rgba(16, 24, 40, .22), 0 4px 10px -4px rgba(16, 24, 40, .12);
+  padding: 18px;
+  animation: cookie-in .3s var(--ease-out);
+}
+
+.cookie__text {
+  margin: 0 0 14px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+
+.cookie__link {
+  color: var(--green-600);
+  text-decoration: underline;
+  font-weight: 500;
+}
+
+.cookie__actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.cookie__actions .btn {
+  padding: 8px 16px;
+  font-size: 13px;
+}
+
+@keyframes cookie-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 640px) {
+  .cookie {
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    width: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cookie {
+    animation: none;
+  }
+}
+
+/* ═════════════════════════════════════════════════════════════
+   IMOB LANDING PAGE (Figma: LPs / imobiliárias)
+   Spec source: Figma file "LPs", page "📋 Dev Specs — Claude Code"
+   ═════════════════════════════════════════════════════════════ */
+
+.imob-container {
+  max-width: var(--imob-maxw);
+  margin-inline: auto;
+}
+
+/* Shared eyebrow label (green, uppercase, semibold 14px) */
+.imob-eyebrow {
+  font-family: var(--font-inter);
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--primary-600);
+  margin: 0 0 16px;
+}
+
+/* Shared buttons (Dev Spec: 4. BOTÕES) */
+.imob-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-weight: 600;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: transform .2s var(--ease-out), background .2s var(--ease-out), box-shadow .2s var(--ease-out);
+}
+
+.imob-btn:hover {
+  transform: translateY(-1px);
+}
+
+.imob-btn:active {
+  transform: translateY(0) scale(.98);
+}
+
+.imob-btn--lg {
+  height: 50px;
+  padding: 8px 24px;
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+.imob-btn--sm {
+  height: 36px;
+  padding: 8px 24px;
+  font-size: 14px;
+  line-height: 1.3;
+}
+
+.imob-btn--header {
+  height: 36px;
+  padding: 8px 16px;
+  font-size: 14px;
+  line-height: 1.3;
+}
+
+.imob-btn--primary {
+  background: var(--primary-600);
+  color: #fff;
+}
+
+.imob-btn--primary:hover {
+  background: #3c9a6d;
+}
+
+.imob-btn--secondary {
+  background: var(--neutral-10);
+  color: var(--secondary-darkest);
+}
+
+.imob-btn--secondary:hover {
+  background: var(--neutral-50);
+}
+
+.imob-btn--block {
+  width: 100%;
+}
+
+/* HEADER */
+.imob-header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: var(--white);
+  border-bottom: 1px solid transparent;
+  transition: box-shadow .3s var(--ease-out), border-color .3s var(--ease-out), background .3s var(--ease-out);
+}
+
+.imob-header--scrolled {
+  border-bottom-color: var(--neutral-50);
+  background: rgba(255, 255, 255, .85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: var(--shadow-sm);
+}
+
+.imob-header__inner {
+  max-width: var(--imob-maxw);
+  margin-inline: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 80px;
+}
+
+.imob-header__logo {
+  display: block;
+  height: 22px;
+  width: 180px;
+  color: var(--neutral-700);
+}
+
+.imob-header__logo svg {
+  display: block;
+  height: 100%;
+  width: auto;
+}
+
+.imob-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  font-family: var(--font-inter);
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.imob-nav-links a {
+  color: var(--neutral-500);
+  transition: color .2s var(--ease-out);
+}
+
+.imob-nav-links a:hover {
+  color: var(--neutral-700);
+}
+
+.imob-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.imob-nav-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  width: 36px;
+  height: 36px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.imob-nav-toggle span {
+  display: block;
+  width: 20px;
+  height: 2px;
+  background: var(--neutral-700);
+  transition: transform .25s var(--ease-out), opacity .25s var(--ease-out);
+}
+
+.imob-nav-toggle[aria-expanded="true"] span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.imob-nav-toggle[aria-expanded="true"] span:nth-child(2) {
+  opacity: 0;
+}
+
+.imob-nav-toggle[aria-expanded="true"] span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+.imob-nav-mobile {
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px 24px 24px;
+  border-top: 1px solid var(--neutral-50);
+}
+
+.imob-nav-mobile.is-open {
+  display: flex;
+}
+
+.imob-nav-mobile a {
+  padding: 10px 0;
+  font-weight: 500;
+  font-size: 15px;
+  color: var(--neutral-700);
+  border-bottom: 1px solid var(--neutral-50);
+}
+
+.imob-nav-mobile__actions {
+  margin-top: 12px;
+}
+
+@media (max-width: 1000px) {
+  .imob-header__inner {
+    padding: 18px 24px;
+  }
+
+  .imob-nav-links {
+    display: none;
+  }
+
+  .imob-header__actions .imob-btn--header {
+    display: none;
+  }
+
+  .imob-nav-toggle {
+    display: inline-flex;
+  }
+}
+
+/* HERO */
+.imob-hero {
+  background: var(--white);
+  overflow: clip;
+}
+
+.imob-hero__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+  padding: 96px 80px;
+}
+
+.imob-hero__content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 32px;
+  width: 620px;
+  max-width: 100%;
+  flex-shrink: 0;
+}
+
+.imob-hero__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border: 1px solid var(--success-default);
+  border-radius: 100px;
+}
+
+.imob-hero__badge__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--success-default);
+  flex-shrink: 0;
+}
+
+.imob-hero__badge__text {
+  font-family: var(--font-inter);
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  color: var(--success-darkest);
+}
+
+.imob-hero__title {
+  font-weight: 700;
+  font-size: 56px;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--neutral-700);
+  margin: 0;
+}
+
+.imob-hero__title__accent {
+  color: var(--success-default);
+}
+
+.imob-hero__sub {
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 1.5;
+  color: var(--neutral-500);
+  margin: 0;
+  max-width: 620px;
+}
+
+.imob-hero__cta {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.imob-hero__proof {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.imob-hero__stars {
+  display: flex;
+  gap: 4px;
+}
+
+.imob-hero__stars img {
+  width: 16px;
+  height: 16px;
+}
+
+.imob-hero__proof__text {
+  font-family: var(--font-inter);
+  font-size: 13px;
+  color: var(--neutral-200);
+}
+
+.imob-hero__illustration {
+  position: relative;
+  width: 520px;
+  height: 550px;
+  flex-shrink: 0;
+  overflow: visible;
+}
+
+.imob-hero__illustration-inner {
+  position: absolute;
+  inset: 0;
+  width: 520px;
+  height: 550px;
+  transform-origin: top left;
+}
+
+.imob-hero__illustration img {
+  position: absolute;
+  display: block;
+  max-width: none;
+}
+
+.imob-hero__casa {
+  left: -126px;
+  top: 39.5px;
+  width: 1072.571px;
+  height: 452.5px;
+}
+
+.imob-hero__homi {
+  left: 65.5px;
+  top: 252px;
+  width: 72px;
+  height: 289px;
+}
+
+.imob-hero__homi2 {
+  left: 143.5px;
+  top: 252px;
+  width: 80px;
+  height: 289px;
+}
+
+@media (max-width: 1400px) {
+  .imob-hero__inner {
+    padding: 72px 40px;
+    gap: 24px;
+  }
+
+  .imob-hero__illustration {
+    width: 405px;
+    height: 429px;
+  }
+
+  .imob-hero__illustration-inner {
+    transform: scale(0.78);
+  }
+}
+
+@media (max-width: 1160px) {
+  .imob-hero__illustration {
+    width: 338px;
+    height: 358px;
+  }
+
+  .imob-hero__illustration-inner {
+    transform: scale(0.65);
+  }
+}
+
+@media (max-width: 1000px) {
+  .imob-hero__inner {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 56px 24px;
+  }
+
+  .imob-hero__content {
+    width: 100%;
+    align-items: center;
+  }
+
+  .imob-hero__title {
+    font-size: clamp(32px, 6vw, 44px);
+  }
+
+  .imob-hero__sub {
+    max-width: 100%;
+  }
+
+  .imob-hero__cta {
+    justify-content: center;
+  }
+
+  .imob-hero__illustration {
+    width: 100%;
+    max-width: 480px;
+    height: 360px;
+    overflow: hidden;
+  }
+
+  .imob-hero__illustration-inner {
+    left: 50%;
+    transform: scale(0.68) translateX(-50%);
+  }
+}
+
+@media (max-width: 480px) {
+  .imob-hero__cta {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+}
+
+/* FOOTER */
+.imob-footer {
+  background: var(--white);
+  border-top: 1px solid var(--neutral-50);
+}
+
+.imob-footer__inner {
+  max-width: var(--imob-maxw);
+  margin-inline: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 40px 80px;
+  flex-wrap: wrap;
+}
+
+.imob-footer__logo {
+  display: block;
+  height: 17px;
+  width: 140px;
+  color: var(--neutral-700);
+  flex-shrink: 0;
+}
+
+.imob-footer__logo svg {
+  display: block;
+  height: 100%;
+  width: auto;
+}
+
+.imob-footer__copy {
+  font-family: var(--font-inter);
+  font-size: 12px;
+  color: var(--neutral-200);
+}
+
+.imob-footer__links {
+  display: flex;
+  gap: 12px;
+  font-family: var(--font-inter);
+  font-size: 13px;
+  color: var(--neutral-200);
+}
+
+.imob-footer__links a:hover {
+  color: var(--neutral-500);
+}
+
+.imob-footer__social {
+  display: flex;
+  gap: 16px;
+  flex-shrink: 0;
+}
+
+.imob-footer__social a {
+  display: block;
+  width: 18px;
+  height: 18px;
+  color: var(--neutral-500);
+  transition: color .2s var(--ease-out);
+}
+
+.imob-footer__social a:hover {
+  color: var(--neutral-700);
+}
+
+.imob-footer__social svg {
+  width: 100%;
+  height: 100%;
+}
+
+@media (max-width: 1000px) {
+  .imob-footer__inner {
+    padding: 32px 24px;
+    justify-content: center;
+    text-align: center;
+  }
+}
+
+/* PARTNERS STRIP */
+.imob-partners {
+  background: var(--neutral-10);
+  padding: 40px 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.imob-partners__label {
+  font-family: var(--font-inter);
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--neutral-500);
+  margin: 0;
+}
+
+.imob-partners__logos {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 64px;
+}
+
+.imob-partners__logos img {
+  display: block;
+  width: auto;
+  max-width: 100%;
+}
+
+@media (max-width: 1000px) {
+  .imob-partners {
+    padding: 32px 24px;
+  }
+
+  .imob-partners__logos {
+    gap: 32px;
+  }
+}
+
+/* FEATURES INTRO */
+.imob-features-intro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 96px 80px 32px;
+  text-align: center;
+}
+
+.imob-features-intro .imob-eyebrow {
+  margin: 0;
+}
+
+.imob-section-title {
+  font-weight: 700;
+  font-size: 40px;
+  line-height: 1.25;
+  color: var(--neutral-700);
+  max-width: 848px;
+  margin: 0;
+}
+
+@media (max-width: 1000px) {
+  .imob-features-intro {
+    padding: 64px 24px 24px;
+  }
+
+  .imob-section-title {
+    font-size: clamp(28px, 6vw, 36px);
+  }
+}
+
+/* Shared 2-column feature layout (text + visual) */
+.imob-feature {
+  display: flex;
+  align-items: center;
+  gap: 80px;
+  padding: 48px 130px;
+  max-width: var(--imob-maxw);
+  margin-inline: auto;
+}
+
+.imob-feature--tight-top {
+  padding-top: 48px;
+}
+
+.imob-feature--tight-bottom {
+  padding-bottom: 48px;
+}
+
+.imob-feature__text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 24px;
+  flex: 1 0 0;
+  min-width: 0;
+}
+
+.imob-feature__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: rgba(69, 173, 126, 0.15);
+  flex-shrink: 0;
+}
+
+.imob-feature__icon img {
+  width: 24px;
+  height: 24px;
+}
+
+.imob-feature__title {
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 1.2;
+  color: var(--neutral-700);
+  margin: 0;
+  max-width: 500px;
+}
+
+.imob-feature__body {
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--neutral-500);
+  margin: 0;
+}
+
+.imob-feature__actions {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.imob-feature__visual {
+  flex-shrink: 0;
+}
+
+@media (max-width: 1100px) {
+  .imob-feature {
+    padding: 48px 40px;
+    gap: 48px;
+  }
+}
+
+@media (max-width: 860px) {
+  .imob-feature {
+    flex-direction: column;
+    text-align: center;
+    padding: 40px 24px;
+  }
+
+  .imob-feature__text {
+    align-items: center;
+  }
+
+  .imob-feature__title {
+    max-width: 100%;
+  }
+
+  .imob-feature__actions {
+    justify-content: center;
+  }
+
+  .imob-feature__visual {
+    max-width: 100%;
+  }
+}
+
+/* FEATURE 1 — AI Response (full-bleed decorative card) */
+.imob-feature-ai {
+  max-width: var(--imob-maxw);
+  margin-inline: auto;
+  padding: 0;
+}
+
+.imob-feature-ai__card {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1440 / 384;
+  min-height: 340px;
+  overflow: clip;
+  background: var(--white);
+}
+
+.imob-feature-ai__line {
+  position: absolute;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.imob-feature-ai__line--flip {
+  transform: scaleY(-1);
+}
+
+.imob-feature-ai__core {
+  position: absolute;
+  left: 68.264%;
+  top: 36.107%;
+  width: 7.222%;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  background: var(--neutral-10);
+  border: 2.6px solid #13db99;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 0 20.8px rgba(19, 219, 153, 0.6);
+}
+
+.imob-feature-ai__core img {
+  width: 60%;
+  height: 60%;
+}
+
+.imob-feature-ai__avatar {
+  position: absolute;
+  width: 2.9%;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 4px 10px rgba(29, 29, 38, .15);
+}
+
+.imob-feature-ai__pill {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  border-radius: 50px;
+  font-family: var(--font-inter);
+  font-weight: 600;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.imob-feature-ai__pill img {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.imob-feature-ai__pill--whatsapp {
+  background: var(--primary-600);
+  color: #fff;
+  border-radius: 7px;
+  padding: 6px 10px;
+}
+
+.imob-feature-ai__pill--instagram {
+  background: #fff;
+  color: var(--neutral-700);
+  border: 0.865px solid var(--neutral-50);
+  border-radius: 7px;
+  padding: 6px 10px;
+  box-shadow: 0 4px 10px rgba(29, 29, 38, .08);
+}
+
+.imob-feature-ai__pill--sms {
+  background: var(--info-lighter);
+  color: var(--neutral-700);
+}
+
+.imob-feature-ai__pill--bolt {
+  background: var(--warning-lighter);
+  color: #000;
+}
+
+.imob-feature-ai__text {
+  position: absolute;
+  left: 9.03%;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 24px;
+  width: min(500px, 80%);
+}
+
+@media (max-width: 860px) {
+  .imob-feature-ai__card {
+    aspect-ratio: auto;
+    min-height: 0;
+    padding: 40px 24px;
+  }
+
+  .imob-feature-ai__line,
+  .imob-feature-ai__core,
+  .imob-feature-ai__avatar,
+  .imob-feature-ai__pill {
+    display: none;
+  }
+
+  .imob-feature-ai__text {
+    position: static;
+    transform: none;
+    width: 100%;
+    text-align: center;
+    align-items: center;
+  }
+}
+
+/* FEATURE 2 — CRM (x-ray split photo) */
+.imob-feature-crm__visual {
+  position: relative;
+  width: 550px;
+  max-width: 100%;
+  aspect-ratio: 550 / 449;
+  background: transparent;
+}
+
+/* Figma "Mask group" (node 1:340) union of both photo pieces' exact bounds:
+   left 3.707% / top -5.933% / width 87.13% / height 106.73% of the card —
+   no scaling, this is their real Figma size/position. Purely a shared
+   percentage coordinate frame for the two pieces below — each piece now
+   carries its OWN exact mask (see below), so this wrapper no longer masks
+   anything itself. */
+.imob-feature-crm__photoframe {
+  position: absolute;
+  left: 3.707%;
+  top: -5.933%;
+  width: 87.13%;
+  height: 106.73%;
+}
+
+/* Base layer, not a Figma node of its own — Figma's static design only
+   ever depicts the "after scan" moment, so it has no "before" state to
+   copy. This fills the ENTIRE photoframe (which is square, ~479x479,
+   matching the mask canvas almost exactly) with the same source portrait
+   used by the dots piece below, masked by Figma's real mask asset at the
+   same absolute alignment the two original pieces (nodes 1:343 + 1:344)
+   share — proven by converting each piece's own mask-position into
+   photoframe-relative coordinates: both resolve to the same ~(6.787,
+   -3.656), confirming they're two windows onto one continuous mask rather
+   than independently placed. object-fit: fill is safe here (no
+   distortion) because the box and the 1254x1254 source are both square. */
+.imob-feature-crm__photo-full {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  mask-image: url('/assets/imob/crm-face-mask.svg');
+  mask-repeat: no-repeat;
+  mask-size: 474.926px 485.949px;
+  mask-position: 6.787px -3.656px;
+}
+
+/* Node 1:343 export, positioned at its exact box within the frame above
+   (left 0%, width 48.79% of the frame). Masked with Figma's real mask
+   asset (node 1:341 "Ellipse 21992": a 474.926x485.949 canvas, ellipse
+   cx 237.463 cy 242.975 rx 206.54 ry 212.052, feGaussianBlur stdDeviation
+   15.4615 — exported as-is to crm-face-mask.svg) at Figma's exact
+   mask-position for this piece, not a generic radial-gradient
+   approximation. object-fit: fill (stretching the 1024x1024 source to the
+   narrow box) matches Figma's own render pixel-for-pixel — verified by
+   diffing this box's rendered output against a direct Figma export of
+   node 1:343; object-fit: cover (any object-position) does not. Sits on
+   top of the full-color base layer and starts fully hidden — clip-path is
+   rewritten every frame in JS (see ScrollFx's setupCrmScan, reprojected
+   into this element's own local percentages) so the black-and-white
+   pixelated look only replaces the color photo in sync with the green
+   scan tint, never before or independently of it. */
+.imob-feature-crm__photo-dots {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 48.79%;
+  height: 99.64%;
+  object-fit: fill;
+  mask-image: url('/assets/imob/crm-face-mask.svg');
+  mask-repeat: no-repeat;
+  mask-size: 474.926px 485.949px;
+  mask-position: 6.787px -3.656px;
+  clip-path: polygon(0 0, 0% 0, 0% 100%, 0 100%);
+}
+
+/* "Data scan" layer — Figma node 1:345. Spans from the card's own left
+   edge (not the photo box) to the scanline, so the green reads as a panel
+   the photo sits inside. Colors are Figma's exact gradient, reversed: its
+   rect is authored as a 180deg gradient then rotate(90deg)'d, which lands
+   opaque #076347 at the scanline and fades to transparent going left.
+   The stop POSITIONS are rewritten every frame in JS (see ScrollFx's
+   setupCrmScan) so the strongest point tracks the moving line; the value
+   below is only the resting / reduced-motion (locked at 46.61%, matching
+   CRM_SCAN_LOCK) look.
+   This is a plain translucent layer sitting ON TOP of the dots piece, per
+   Figma — not a mix-blend-mode recolor. blend-mode: color was tried
+   earlier but it flattens the halftone's black/white dots into a smooth
+   duotone wash (loses the visible pixelated texture); a normal-blend
+   gradient that's nearly transparent at the frame edge and opaque at the
+   scanline keeps the dot pattern legible throughout, exactly like the
+   reference. */
+.imob-feature-crm__scanoverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(122, 185, 164, 0) 0%, rgba(94, 185, 155, .5) 18.6%, rgba(48, 185, 140, .8) 32.6%, rgba(16, 185, 129, .9) 39.6%, #076347 46.61%);
+  clip-path: polygon(0 0, 0% 0, 0% 100%, 0 100%);
+}
+
+/* Figma node 1:346 — runs taller than the frame (109.7%, centered). */
+.imob-feature-crm__scanline {
+  position: absolute;
+  top: -4.85%;
+  height: 109.7%;
+  left: 0%;
+  width: 2px;
+  background: linear-gradient(180deg, rgba(16, 185, 129, 0) 0%, #10b981 10%, #10b981 90%, rgba(16, 185, 129, 0) 100%);
+  box-shadow: 0 0 14px 2px rgba(19, 219, 153, .45);
+  pointer-events: none;
+}
+
+/* Figma label group (node 1:325): left 61%, top 16.04%, w 36.81%, h 44.32%
+   of the 550x449 frame. Rows are full-width so every dash starts and ends
+   at the same x and the text always begins at 38.11% — left-aligned as a
+   column, not right-aligned per row. */
+.imob-feature-crm__labels {
+  position: absolute;
+  left: 61%;
+  top: 16.04%;
+  width: 36.81%;
+  height: 44.32%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.imob-feature-crm__label {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 6.88%;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: 0.11em;
+  color: var(--mono-ink);
+  white-space: nowrap;
+}
+
+/* 31.23% of the label column = Figma's 63.238px dash on a 202.479px box. */
+.imob-feature-crm__label::before {
+  content: '';
+  flex: none;
+  width: 31.23%;
+  height: 1px;
+  background: var(--neutral-100);
+}
+
+/* Icon + text ride together after the dash (Figma node 1:337, gap 4.641px). */
+.imob-feature-crm__label__tag {
+  display: flex;
+  align-items: center;
+  gap: 4.6px;
+}
+
+/* First three tags (QUENTE, $$$, URGÊNCIA) get a green gradient-fade line;
+   the last one (LOCALIZAÇÃO, with the loading icon) keeps the plain grey. */
+.imob-feature-crm__label:nth-child(-n+3)::before {
+  background: linear-gradient(90deg, rgba(19, 219, 153, 0) 0%, #13db99 100%);
+}
+
+/* Only the LOCALIZAÇÃO tag has an <img> (the loading glyph) — spin it to
+   read as a live "still searching" indicator. Global prefers-reduced-motion
+   rules already clamp animation-duration to ~0, so no extra guard needed. */
+.imob-feature-crm__label img {
+  width: 14px;
+  height: 14px;
+  animation: imob-crm-spin 1.1s linear infinite;
+}
+
+@keyframes imob-crm-spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 640px) {
+  .imob-feature-crm__labels {
+    display: none;
+  }
+}
+
+/* FEATURE 3 — Follow-up (workflow mockup) */
+.imob-feature-followup__visual {
+  width: 550px;
+  max-width: 100%;
+  height: 320px;
+  border: 1px solid var(--neutral-50);
+  border-radius: 8px;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba(255, 117, 117, .08), rgba(92, 169, 240, .08));
+}
+
+.imob-followup-flow {
+  position: relative;
+  width: 502px;
+  height: 255.5px;
+  flex-shrink: 0;
+}
+
+.imob-followup-card {
+  position: absolute;
+  width: 200px;
+  background: var(--white);
+  border: 1px solid var(--neutral-50);
+  border-radius: 8px;
+  box-shadow: 0 8px 30px -8px rgba(29, 29, 38, .2);
+  overflow: hidden;
+}
+
+.imob-followup-card--trigger {
+  left: 0;
+  top: 0;
+}
+
+.imob-followup-card--condition {
+  left: 151px;
+  top: 89px;
+}
+
+.imob-followup-card--action {
+  left: 302px;
+  top: 178.5px;
+  border-color: var(--success-default);
+}
+
+.imob-followup-card__head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  background: var(--neutral-50);
+  font-family: var(--font-inter);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--neutral-700);
+}
+
+.imob-followup-card--condition .imob-followup-card__head {
+  background: var(--warning-clean);
+}
+
+.imob-followup-card--action .imob-followup-card__head {
+  background: var(--primary-300);
+}
+
+.imob-followup-card__head img {
+  width: 12px;
+  height: 12px;
+  margin-left: auto;
+}
+
+.imob-followup-card__body {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+}
+
+.imob-followup-card__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  background: var(--neutral-50);
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.imob-followup-card--condition .imob-followup-card__icon {
+  background: var(--warning-clean);
+}
+
+.imob-followup-card__icon img {
+  width: 20px;
+  height: 20px;
+}
+
+.imob-followup-card__icon img.imob-followup-avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.imob-followup-card__label {
+  font-family: var(--font-inter);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--neutral-500);
+  display: block;
+}
+
+.imob-followup-card__value {
+  font-family: var(--font-inter);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--neutral-700);
+  display: block;
+}
+
+/* Figma nodes 1:368 / 1:369: a 74.785x60.62 centering box holding the
+   connector art at its native 78.1815x47.9828 size (the "inset" figures in
+   Figma's export resolve to the SVG's own intrinsic dimensions), rotated
+   19.66deg and skewed 3.19deg about that centered box's center. Reproduced
+   directly on the img — left/top below are the pre-transform box's
+   position shifted by half the size delta so the transform-origin center
+   lands exactly where Figma's centering wrapper would place it. */
+.imob-followup-arrow {
+  position: absolute;
+  width: 78.1815px;
+  height: 47.9828px;
+  transform: rotate(19.66deg) skewX(3.19deg);
+}
+
+.imob-followup-arrow--1 {
+  left: 87.302px;
+  top: 83.069px;
+}
+
+.imob-followup-arrow--2 {
+  left: 238.302px;
+  top: 171.069px;
+}
+
+@media (max-width: 600px) {
+  .imob-feature-followup__visual {
+    height: auto;
+    padding: 40px 12px;
+  }
+
+  .imob-followup-flow {
+    transform: scale(0.62);
+  }
+}
+
+/* FEATURE 4 — Reports (tilted screenshot).
+   Figma node 1:371 sizes its box 445.674 x 541.623 — which is *exactly* the
+   bounding box of the 487.709 x 343.546 frame under the tilt below, so the
+   screenshot sits fully inside it with nothing clipped. Keep the two in
+   sync: `--reports-scale` is applied as the leftmost (uniform) transform,
+   so it scales the frame and its bounding box by the same factor. */
+.imob-feature-reports__visual {
+  --reports-scale: 1;
+  width: calc(445.674px * var(--reports-scale));
+  height: calc(541.623px * var(--reports-scale));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* GSAP entrance target. It is a separate box from the frame so the tilt
+   below stays purely in CSS and the two never fight over `transform`. */
+.imob-feature-reports__stage {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.imob-feature-reports__frame {
+  position: relative;
+  width: 487.709px;
+  height: 343.546px;
+  flex-shrink: 0;
+  border: 8px solid #000;
+  border-radius: 4px;
+  overflow: hidden;
+  transform: scale(var(--reports-scale)) rotate(-23.96deg) skewX(-23.96deg) scaleY(0.91);
+}
+
+.imob-feature-reports__frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Screen glare swept across the panel by ScrollFx as the frame settles. */
+.imob-feature-reports__glare {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  background: linear-gradient(105deg, transparent 38%, rgba(255, 255, 255, .5) 50%, transparent 62%);
+}
+
+@media (max-width: 520px) {
+  .imob-feature-reports__visual {
+    --reports-scale: .84;
+  }
+}
+
+@media (max-width: 430px) {
+  .imob-feature-reports__visual {
+    --reports-scale: .72;
+  }
+}
+
+@media (max-width: 380px) {
+  .imob-feature-reports__visual {
+    --reports-scale: .64;
+  }
+}
+
+/* FEATURE 5 — History (gradient-border timeline card).
+   Figma 1:379 pads this one asymmetrically: 48px top, 104px bottom. */
+.imob-feature-history {
+  padding-bottom: 104px;
+}
+
+.imob-feature-history__visual {
+  width: 550px;
+  max-width: 100%;
+  padding: 24px;
+  border-radius: 16px;
+  border: 1px solid transparent;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  /* Figma 1:390 — a near-white card carrying an 8% pink→blue wash, ringed
+     by the AI gradient (Dev Spec: #FF7575 → #5CA9F0).
+     The opaque white layer in the middle is load-bearing: the border-box
+     layer paints across the *whole* element, so without something solid
+     clipped to the padding box the full-strength gradient reads straight
+     through the 8% wash and floods the card. */
+  background:
+    linear-gradient(128.53deg, rgba(255, 117, 117, .08) 0%, rgba(92, 169, 240, .08) 100.1%) padding-box,
+    linear-gradient(var(--white), var(--white)) padding-box,
+    linear-gradient(90deg, var(--ai-1), var(--ai-3)) border-box;
+}
+
+.imob-history-item {
+  position: relative;
+}
+
+/* Figma 1:398 — a 2px, 45px-tall run that stops right at the next step,
+   so it reads as a trail between dots rather than a continuous rail. */
+.imob-history-item:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 11px;
+  bottom: -32px;
+  height: 45px;
+  width: 2px;
+  background: var(--success-dark);
+}
+
+.imob-history-item--trail-idle:not(:last-child)::after {
+  background: var(--neutral-50);
+}
+
+.imob-history-item__row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.imob-history-item__dot {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  /* Figma 1:393 uses primary/default here, not the brighter success green. */
+  background: var(--primary-600);
+  flex-shrink: 0;
+}
+
+.imob-history-item--pending .imob-history-item__dot {
+  background: var(--neutral-100);
+}
+
+.imob-history-item__dot img {
+  width: 15px;
+  height: 15px;
+}
+
+.imob-history-item__title {
+  font-family: var(--font-inter);
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 1.4;
+  color: var(--neutral-700);
+  margin: 0;
+}
+
+.imob-history-item__date {
+  font-family: var(--font-inter);
+  font-size: 16px;
+  line-height: 1.4;
+  color: var(--neutral-500);
+  margin: 0;
+  padding-left: 36px;
+}
+
+@media (max-width: 640px) {
+  .imob-feature-history__visual {
+    padding: 20px;
+  }
+}
+
+/* HOW IT WORKS */
+.imob-how {
+  background: var(--neutral-10);
+  padding: 96px 130px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 56px;
+}
+
+.imob-how__header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+}
+
+.imob-how__header .imob-eyebrow {
+  margin: 0;
+}
+
+.imob-how__title {
+  font-weight: 700;
+  font-size: 36px;
+  line-height: 1.25;
+  color: var(--neutral-700);
+  margin: 0;
+  /* Figma 1:437 sits on one line at 824px — leave room for it. */
+  max-width: 900px;
+}
+
+.imob-how__grid {
+  display: flex;
+  gap: 32px;
+  width: 100%;
+  max-width: 1180px;
+  align-items: flex-start;
+}
+
+.imob-step-card {
+  flex: 1 0 0;
+  min-width: 0;
+  background: var(--white);
+  border: 1px solid var(--neutral-50);
+  border-radius: 8px;
+  box-shadow: 0 16px 40px -8px rgba(29, 29, 38, .08);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  /* The step art is authored at Figma's exact px coordinates inside a
+     340px-wide stage. Rather than reflow it, the whole stage is scaled by
+     the card's real content width. */
+  --how-art-scale: 1;
+}
+
+@supports (scale: tan(atan2(1px, 1px))) {
+  .imob-step-card {
+    container-type: inline-size;
+    /* tan(atan2(a, b)) is the CSS way to divide two lengths into the
+       unitless ratio `scale` needs. */
+    --how-art-scale: min(1, tan(atan2(100cqw, 340px)));
+  }
+}
+
+.imob-step-card__visual {
+  --how-art-h: 150px;
+  position: relative;
+  width: 100%;
+  height: calc(var(--how-art-h) * var(--how-art-scale));
+  overflow: hidden;
+}
+
+/* Card 1 (Figma 1:440) is 152 tall and lets its channel nodes bleed a
+   couple of px past the well, so it is not clipped. */
+.imob-step-card__visual--open {
+  --how-art-h: 152px;
+  overflow: visible;
+}
+
+/* Card 3 (Figma 1:503) draws its art on a filled, rounded panel. */
+.imob-step-card__visual--panel {
+  background: var(--neutral-10);
+  border-radius: 8px;
+}
+
+.imob-step-card__art {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 340px;
+  height: var(--how-art-h);
+  transform: scale(var(--how-art-scale));
+  transform-origin: top left;
+}
+
+/* Several art layers are deliberately wider than the box they are pinned
+   to — a stroke overhangs its Figma frame by half its width, and the chip
+   pins live in a zero-width box. The global `img { max-width: 100% }`
+   would clamp them away. */
+.imob-step-card__art img {
+  max-width: none;
+}
+
+.imob-step-card__title {
+  font-family: var(--font-inter);
+  font-weight: 600;
+  font-size: 20px;
+  color: var(--neutral-700);
+  margin: 0;
+  display: flex;
+  gap: 8px;
+}
+
+.imob-step-card__title span.imob-step-card__num {
+  color: var(--primary-600);
+}
+
+.imob-step-card__body {
+  font-family: var(--font-inter);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--neutral-500);
+  margin: 0;
+}
+
+/* Step 1 — Conecte seus Canais (Figma 1:440).
+   Chip "pins" flanking the AI badge — a 25px vertical run drawn by the
+   exported gradient stroke, rotated into place exactly as in Figma. */
+.imob-how-connect__pin {
+  position: absolute;
+  width: 0;
+  height: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.imob-how-connect__pin img {
+  flex: none;
+  transform: rotate(-90deg);
+}
+
+.imob-how-connect__pin--thin img {
+  width: 26px;
+  height: 1px;
+}
+
+.imob-how-connect__pin--thick img {
+  width: 26.5px;
+  height: 1.5px;
+}
+
+/* Elbow connectors. Each asset overhangs its Figma box by half a stroke. */
+.imob-how-connect__curve {
+  position: absolute;
+  width: 93.491px;
+  height: 44.408px;
+}
+
+.imob-how-connect__curve img {
+  position: absolute;
+  inset: -0.75px;
+  width: calc(100% + 1.5px);
+  height: calc(100% + 1.5px);
+}
+
+/* Data packet riding the elbow (animated by ScrollFx via offset-distance).
+   Starts invisible, so with no JS — or under reduced motion — the connector
+   is simply the static Figma stroke. */
+.imob-how-connect__packet {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 7px;
+  height: 7px;
+  /* The exported stroke overhangs its box by half its width; nudge the
+     packet by the same amount so it rides the centre of the line. */
+  margin: -0.75px 0 0 -0.75px;
+  offset-distance: 0%;
+  offset-rotate: 0deg;
+  opacity: 0;
+}
+
+.imob-how-connect__packet-dot {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 7px currentColor;
+}
+
+.imob-how-connect__curve--rot180 {
+  transform: rotate(180deg);
+}
+
+.imob-how-connect__curve--flip-x {
+  transform: scaleX(-1);
+}
+
+.imob-how-connect__curve--flip-y {
+  transform: scaleY(-1);
+}
+
+.imob-how-connect__line {
+  position: absolute;
+  top: calc(50% + 0.45px);
+  width: 130.887px;
+  height: 0;
+  transform: translateY(-50%);
+}
+
+.imob-how-connect__line img {
+  position: absolute;
+  left: -0.75px;
+  top: -0.75px;
+  width: calc(100% + 1.5px);
+  height: 1.5px;
+}
+
+.imob-how-connect__node {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.imob-how-connect__node img {
+  width: 28px;
+  height: 28px;
+}
+
+.imob-how-connect__node--filter {
+  background: linear-gradient(225deg, #feb8b8 0%, #ff7575 79.962%);
+}
+
+.imob-how-connect__node--instagram {
+  background: linear-gradient(225deg, #ccb6fd 0%, #976df7 81.805%);
+}
+
+.imob-how-connect__node--whatsapp {
+  background: linear-gradient(135deg, #8ff4d1 0%, #059669 79.969%);
+}
+
+.imob-how-connect__node--sms {
+  background: linear-gradient(135deg, #aac7e2 0%, #64a0d8 79.969%);
+}
+
+.imob-how-connect__hub {
+  position: absolute;
+  left: 137.36px;
+  top: 45.32px;
+  width: 62.327px;
+  height: 62.327px;
+  padding-top: 3.116px;
+  border: 1.558px solid #13db99;
+  border-radius: 12.465px;
+  background: var(--white);
+  box-shadow: inset 0 0 12.465px rgba(19, 219, 153, .6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.imob-how-connect__hub img {
+  width: 37.396px;
+  height: 37.396px;
+}
+
+/* Step 2 — AI Qualifica os Leads (Figma 1:477) */
+.imob-how-radar__disc {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 300px;
+  height: 150px;
+  transform: translateX(-50%);
+}
+
+.imob-how-radar__disc img {
+  width: 100%;
+  height: 100%;
+}
+
+.imob-how-radar__rings {
+  position: absolute;
+  left: 47px;
+  top: -0.553px;
+  width: 245px;
+  height: 273.553px;
+}
+
+.imob-how-radar__rings img {
+  position: absolute;
+  left: -1.005px;
+  top: -0.492px;
+  width: 247px;
+  height: 274.053px;
+}
+
+.imob-how-radar__sweep {
+  position: absolute;
+  left: 168.5px;
+  top: 27.947px;
+  width: 106.5px;
+  height: 123.5px;
+  /* Dish centre (170, 150) expressed inside this box, so ScrollFx can swing
+     the wedge around the radar's origin rather than its own middle. */
+  transform-origin: 1.5px 122.053px;
+}
+
+.imob-how-radar__sweep img {
+  position: absolute;
+  left: -0.735px;
+  top: -0.741px;
+  width: 107.975px;
+  height: 124.972px;
+}
+
+.imob-how-radar__baseline {
+  position: absolute;
+  left: 20.5px;
+  top: 149.447px;
+  width: 299px;
+  height: 0;
+}
+
+.imob-how-radar__baseline img {
+  position: absolute;
+  left: -0.5px;
+  top: -0.5px;
+  width: 300px;
+  height: 1px;
+}
+
+.imob-how-radar__dot {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  border-radius: 50px;
+  background: var(--success-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.imob-how-radar__dot img {
+  width: 16px;
+  height: 16px;
+}
+
+.imob-how-radar__dot--bad {
+  background: var(--error-darkest);
+}
+
+.imob-how-radar__avatar {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+}
+
+/* Step 3 — Você Fecha os Negócios (Figma 1:503) */
+.imob-how-agenda__map {
+  position: absolute;
+  left: calc(50% + 4px);
+  top: calc(50% + 11.447px);
+  width: 467px;
+  height: 402px;
+  transform: translate(-50%, -50%);
+}
+
+.imob-how-agenda__map img {
+  position: absolute;
+  inset: -0.5px;
+  width: calc(100% + 1px);
+  height: calc(100% + 1px);
+}
+
+.imob-how-agenda__num {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.imob-how-agenda__num b {
+  font-family: var(--font-inter);
+  font-weight: 500;
+  font-size: 13.924px;
+  line-height: 1.2;
+  color: var(--neutral-500);
+  white-space: nowrap;
+  transform: rotate(-10.77deg);
+}
+
+.imob-how-agenda__card {
+  position: absolute;
+  width: 132px;
+  height: 82px;
+}
+
+.imob-how-agenda__card-face {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+}
+
+.imob-how-agenda__card--back1 {
+  left: calc(50% - 2.138px);
+  top: calc(50% - 8.868px);
+  transform: translate(-50%, -50%) rotate(-15deg);
+}
+
+.imob-how-agenda__card--back1 .imob-how-agenda__card-face {
+  background: var(--success-light);
+}
+
+.imob-how-agenda__card--back2 {
+  left: calc(50% + 5.031px);
+  top: calc(50% + 1.232px);
+  transform: translate(-50%, -50%) rotate(-7.05deg);
+}
+
+.imob-how-agenda__card--back2 .imob-how-agenda__card-face {
+  background: var(--success-default);
+}
+
+.imob-how-agenda__card--front {
+  left: calc(50% + 10.5px);
+  top: calc(50% + 10.447px);
+  transform: translate(-50%, -50%);
+}
+
+.imob-how-agenda__card--front .imob-how-agenda__card-face {
+  background: var(--success-dark);
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.imob-how-agenda__card--front em {
+  width: 100%;
+  font-family: var(--font-inter);
+  font-style: normal;
+  font-size: 10px;
+  line-height: 1.2;
+  color: var(--neutral-10);
+}
+
+.imob-how-agenda__date {
+  font-weight: 400;
+}
+
+.imob-how-agenda__label {
+  font-weight: 600;
+}
+
+@media (max-width: 1000px) {
+  .imob-how {
+    padding: 64px 24px;
+  }
+
+  .imob-how__grid {
+    flex-direction: column;
+  }
+}
+
+/* TESTIMONIALS */
+.imob-testimonials {
+  padding: 96px 130px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 48px;
+}
+
+.imob-testimonials__header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+}
+
+.imob-testimonials__header .imob-eyebrow {
+  margin: 0;
+}
+
+.imob-testimonials__title {
+  font-weight: 700;
+  font-size: 36px;
+  line-height: 1.25;
+  color: var(--neutral-700);
+  margin: 0;
+}
+
+/* Figma 76:2159 — `items-center` is what staggers the row: the middle card
+   is 50px taller than its neighbours and overhangs them evenly. */
+.imob-testimonials__grid {
+  display: flex;
+  gap: 24px;
+  width: 100%;
+  max-width: 1180px;
+  align-items: center;
+}
+
+.imob-testimonial-card {
+  flex: 1 0 0;
+  min-width: 0;
+  height: 400px;
+  background: var(--neutral-10);
+  border: 1px solid var(--neutral-50);
+  border-radius: 16px;
+  padding: 32px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.imob-testimonial-card--featured {
+  height: 450px;
+  box-shadow: 0 8px 30px -8px rgba(29, 29, 38, .2);
+}
+
+.imob-testimonial-card__quote {
+  font-family: var(--font-inter);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 1.4;
+  color: var(--neutral-500);
+  margin: 0;
+}
+
+.imob-testimonial-card__quote strong {
+  font-weight: 700;
+}
+
+.imob-testimonial-card__author {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.imob-testimonial-card__author img {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.imob-testimonial-card__name {
+  font-family: var(--font-inter);
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 1.4;
+  color: var(--neutral-500);
+  margin: 0;
+}
+
+.imob-testimonial-card__role {
+  font-family: var(--font-inter);
+  font-size: 15px;
+  line-height: 1.4;
+  color: var(--primary-600);
+  margin: 0;
+}
+
+/* Below the design width the quotes wrap further, so the row's fixed Figma
+   heights become floors instead — the stagger only reads on a real row. */
+@media (max-width: 1180px) {
+  .imob-testimonial-card,
+  .imob-testimonial-card--featured {
+    height: auto;
+    min-height: 340px;
+  }
+}
+
+@media (max-width: 1000px) {
+  .imob-testimonials {
+    padding: 64px 24px;
+  }
+
+  .imob-testimonials__grid {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .imob-testimonial-card,
+  .imob-testimonial-card--featured {
+    min-height: 0;
+  }
+}
+
+/* CTA */
+.imob-cta {
+  padding: 96px 130px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.imob-cta__card {
+  position: relative;
+  width: 100%;
+  max-width: 1120px;
+  background: var(--neutral-800);
+  border: 1px solid var(--neutral-700);
+  border-radius: 24px;
+  padding: 64px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+  text-align: center;
+  overflow: hidden;
+}
+
+.imob-cta__glow {
+  position: absolute;
+  left: 50%;
+  bottom: -201px;
+  width: 400px;
+  height: 400px;
+  transform: translateX(-50%);
+  background: var(--success-default);
+  opacity: 0.35;
+  filter: blur(117.5px);
+  pointer-events: none;
+}
+
+.imob-cta__title {
+  position: relative;
+  font-weight: 700;
+  font-size: 40px;
+  line-height: 1.25;
+  color: var(--neutral-10);
+  margin: 0;
+  max-width: 700px;
+}
+
+.imob-cta__body {
+  position: relative;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--neutral-50);
+  margin: 0;
+  max-width: 680px;
+}
+
+.imob-cta__actions {
+  position: relative;
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.imob-cta__note {
+  position: relative;
+  font-size: 12px;
+  color: var(--neutral-50);
+  margin: 0;
+}
+
+@media (max-width: 1000px) {
+  .imob-cta {
+    padding: 64px 24px;
+  }
+
+  .imob-cta__card {
+    padding: 40px 24px;
+  }
+
+  .imob-cta__title {
+    font-size: clamp(26px, 6vw, 34px);
+  }
+}
