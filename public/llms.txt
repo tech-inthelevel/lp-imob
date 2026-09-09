@@ -12,10 +12,16 @@ JSYNQ Imob atende automaticamente os leads de uma imobiliária pelos principais 
 - **Relatórios e insights**: origem dos melhores leads, o que buscam, quais abordagens fecham mais visitas
 - **Histórico rastreável**: timeline única por lead, visível para qualquer corretor que assuma o atendimento
 
+## Como funciona (3 passos)
+
+1. **Conecte seus canais**: em poucos minutos, WhatsApp, Instagram e os sistemas da imobiliária são conectados ao Workspace.
+2. **A IA qualifica os leads**: engaja imediatamente, filtra curiosos, descobre o perfil de investimento e agenda a visita ideal.
+3. **A equipe fecha os negócios**: os corretores entram em ação só com leads quentes, com histórico completo e visitas já agendadas.
+
 ## Como funciona esta página
 
 - Não há cadastro de conta nem cobrança nesta LP — os CTAs abrem um formulário de contato (modal) ou o WhatsApp.
-- Idiomas suportados: português (Brasil), inglês, espanhol.
+- Idiomas suportados: português (Brasil), inglês, espanhol. O idioma é escolhido por cookie/geolocalização e pode ser trocado no seletor do topo.
 
 ## Contato
 
@@ -26,3 +32,5 @@ JSYNQ Imob atende automaticamente os leads de uma imobiliária pelos principais 
 
 - Landing: https://imob.jsynq.com/
 - Sitemap: https://imob.jsynq.com/sitemap.xml
+- Política de Privacidade: https://imob.jsynq.com/privacy-policy
+- Termos de Uso: https://imob.jsynq.com/terms-of-use

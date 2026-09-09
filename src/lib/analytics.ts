@@ -5,6 +5,8 @@
  * Tracking functions no-op gracefully when no gtag/dataLayer is present.
  */
 
+import type { LanguageCode } from '@/lib/i18n/translations';
+
 declare global {
   interface Window {
     dataLayer: Record<string, unknown>[];
@@ -47,6 +49,49 @@ export const getUserCountry = (): UserCountry => {
 export const getUserCurrency = (): 'USD' | 'BRL' => {
   return getUserCountry() === 'BR' ? 'BRL' : 'USD';
 };
+
+// Every "Começar Teste Grátis" CTA sends visitors straight into the app's
+// own sign-up flow rather than this page's contact form. `location` is the
+// same source label already passed to trackSignUpClick, carried along as a
+// UTM param so it's visible on the receiving end too, not just in this
+// site's own GA.
+export const SIGNUP_URL = 'https://app.jsynq.com/sign-up';
+
+/**
+ * White-label guard for the sign-up screen.
+ *
+ * app.jsynq.com brands /sign-up from an `lp` (launch partner) param. Its
+ * resolver is `lp = urlParam || storedParam`, where the stored value lives in
+ * session/localStorage under `subscription:params` and persists for 30 days.
+ * So a visitor who ever opened a partner link keeps seeing that partner's
+ * logo on our sign-up too — verified: a partner value planted in storage was
+ * overridden the moment a URL `lp` was supplied, and the stored value was
+ * rewritten to match.
+ *
+ * Sending an explicit `lp` therefore both wins over the stale value and
+ * repairs it. Unknown values fall back to `setBranding(null)` = default JSYNQ
+ * branding, which is what 'jsynq' currently hits.
+ *
+ * CAVEAT: that fallback is exactly *why* it works — 'jsynq' isn't a
+ * registered partner slug. If one is ever created with this slug, these CTAs
+ * would start showing that partner's branding. Replace with whatever reserved
+ * "no partner" value the platform team confirms.
+ */
+export const SIGNUP_LP = 'jsynq';
+
+// `lang` mirrors this site's own query-param convention for language
+// (see detectLanguage in lib/i18n/context.tsx) — app.jsynq.com reads it the
+// same way, so a visitor who picked PT/EN/ES here lands on sign-up already
+// in that language instead of whatever it detects on its own.
+export function buildSignUpUrl(location: string, language: LanguageCode): string {
+  const url = new URL(SIGNUP_URL);
+  url.searchParams.set('lp', SIGNUP_LP);
+  url.searchParams.set('lang', language);
+  url.searchParams.set('utm_source', 'imob_lp');
+  url.searchParams.set('utm_medium', 'cta');
+  url.searchParams.set('utm_content', location);
+  return url.toString();
+}
 
 export type LandingPageType = 'home' | 'landingpage';
 

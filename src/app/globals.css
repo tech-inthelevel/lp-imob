@@ -166,10 +166,20 @@ ul {
 }
 
 /* Reveal on scroll: initial hidden state; RevealManager (GSAP + ScrollTrigger)
-   animates opacity/transform in and overrides these inline. */
+   animates opacity/transform/filter in and overrides these inline. 6px mirrors
+   the animated (not the static fallback) blur value [data-fx="mask-title"]
+   tweens from below — a lighter radius than that fallback's, since this one is
+   actually animated and several of these often run at once on first paint. */
 [data-reveal] {
   opacity: 0;
   transform: translateY(24px);
+  filter: blur(6px);
+}
+
+/* Elements opted out of the blur (see RevealManager) skip it here too, so the
+   pre-hydration fallback state matches what JS actually animates from. */
+[data-reveal][data-reveal-blur='off'] {
+  filter: none;
 }
 
 /* Cinematic scroll effects (ScrollFx): initial hidden states before GSAP
@@ -178,6 +188,15 @@ ul {
 [data-fx="zoom-in"] {
   opacity: 0;
   transform: scale(0.85);
+}
+
+/* Hero title: lines rise into view one at a time instead of fading — see
+   setupLineReveal in ScrollFx.tsx. No blur (unlike [data-fx="mask-title"]
+   below): this fallback just holds the whole heading down/hidden until JS
+   clears it and splits it into per-line masks. */
+[data-fx="line-reveal"] {
+  opacity: 0;
+  transform: translateY(24px);
 }
 
 [data-fx="slide-left"] {
@@ -889,6 +908,24 @@ body.modal-open {
   justify-content: space-between;
   gap: 40px;
   padding: 96px 80px;
+  /* A floor, not a fixed height: on the Figma reference height (and
+     anything shorter) content+padding already exceeds this, so nothing
+     changes there. It only kicks in on tall viewports, where the row was
+     previously just as short as its content demanded — leaving it sitting
+     near the top of the screen with a mostly-empty page below, reading as
+     "pushed down" relative to all the unused space.
+     Subtracts the sticky header's real height (--header-height, set by
+     ScrollFx from the header's own getBoundingClientRect — see
+     syncHeaderHeight) so the row's bottom edge lands exactly at the fold.
+     Skipping that subtraction was tried first and looked fine in testing,
+     but on a real monitor it meant the row ran a header's-height past the
+     fold — so the *bottom* half of the centering (the symmetric partner to
+     that big visible top gap) was hidden below it, needing a scroll to
+     reach. The 93px fallback is only for the instant before that JS runs.
+     Reset to `auto` on mobile below, where the row switches to
+     flex-direction: column and a min-height here would just strand the
+     content up top over a lot of empty space instead of centering it. */
+  min-height: calc(100dvh - var(--header-height, 93px));
 }
 
 .imob-hero__content {
@@ -999,11 +1036,22 @@ body.modal-open {
   max-width: none;
 }
 
+/* The house is inlined server-side (HeroCasa.tsx) rather than an <img>, so its
+   internal draw-on animation actually plays — see HeroCasa.tsx for why. It still
+   needs the positioning the shared `img` rule above gives homi/homi2. */
 .imob-hero__casa {
+  position: absolute;
+  display: block;
   left: -126px;
-  top: 39.5px;
+  top: 0px;
   width: 1072.571px;
   height: 452.5px;
+}
+
+.imob-hero__casa svg {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 .imob-hero__homi {
@@ -1018,6 +1066,38 @@ body.modal-open {
   top: 252px;
   width: 80px;
   height: 289px;
+}
+
+/* The house draws itself on like a pencil sketch (the animation lives inside
+   hero-casa.svg — see scripts/animate-casa.mjs), so the illustration is not a
+   `[data-reveal]` target and the two figures need their own entrance. They are
+   solid filled shapes, not line art, so they fade up instead of drawing on —
+   timed to land as the last lines of the house finish (~2.2s in). */
+@media (prefers-reduced-motion: no-preference) {
+  .imob-hero__homi,
+  .imob-hero__homi2 {
+    animation: imob-casa-figure 620ms var(--ease-out) both;
+  }
+
+  .imob-hero__homi {
+    animation-delay: 2020ms;
+  }
+
+  .imob-hero__homi2 {
+    animation-delay: 2180ms;
+  }
+}
+
+@keyframes imob-casa-figure {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 @media (max-width: 1400px) {
@@ -1053,6 +1133,11 @@ body.modal-open {
     align-items: center;
     text-align: center;
     padding: 56px 24px;
+    /* See the base rule: 100dvh only makes sense in row layout, where
+       align-items:center distributes the extra space vertically. Stacked
+       in a column, it would just strand the content at the top over a
+       tall empty gap instead. */
+    min-height: auto;
   }
 
   .imob-hero__content {
@@ -1797,28 +1882,53 @@ body.modal-open {
   display: block;
 }
 
-/* Figma nodes 1:368 / 1:369: a 74.785x60.62 centering box holding the
-   connector art at its native 78.1815x47.9828 size (the "inset" figures in
-   Figma's export resolve to the SVG's own intrinsic dimensions), rotated
-   19.66deg and skewed 3.19deg about that centered box's center. Reproduced
-   directly on the img — left/top below are the pre-transform box's
-   position shifted by half the size delta so the transform-origin center
-   lands exactly where Figma's centering wrapper would place it. */
-.imob-followup-arrow {
+/* Connector SVG spanning the whole flow box — see LINE_1/LINE_2 in
+   FeatureFollowup.tsx for how the paths are anchored to the cards' edges. */
+.imob-followup-lines {
   position: absolute;
-  width: 78.1815px;
-  height: 47.9828px;
-  transform: rotate(19.66deg) skewX(3.19deg);
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
 }
 
-.imob-followup-arrow--1 {
-  left: 87.302px;
-  top: 83.069px;
+/* Hidden until the card it sits on has fully landed — otherwise it reads as
+   a stray mark floating over empty space before that card even exists. */
+.imob-followup-line__port {
+  fill: var(--neutral-100);
+  opacity: 0;
 }
 
-.imob-followup-arrow--2 {
-  left: 238.302px;
-  top: 171.069px;
+/* The "growing" draw-in stroke. ScrollFx sets stroke-dasharray to this
+   path's own measured length so stroke-dashoffset can reveal it from
+   nothing — plain gray, since it's just the connecting motion, not the
+   flow indicator. Hidden by default: with JS disabled this never appears,
+   which just leaves the dotted `__flow` line as a normal static connector
+   (see the reduced-motion branch in ScrollFx). */
+.imob-followup-line__reveal {
+  fill: none;
+  stroke: var(--neutral-100);
+  stroke-width: 1.5;
+  opacity: 0;
+}
+
+/* The permanent dotted connector. Brand green, not neutral, so the marching
+   dots read as "data actively flowing" rather than decoration. */
+.imob-followup-line__flow {
+  fill: none;
+  stroke: var(--primary-600);
+  stroke-width: 2;
+  stroke-linecap: round;
+  opacity: 0;
+}
+
+/* FOUC guard for the three flow cards — mirrors [data-fx="card"] but with a
+   smaller offset sized to these ~84px-tall cards rather than the big
+   feature-grid ones. */
+[data-fx="followup-card"] {
+  opacity: 0;
+  transform: translateY(10px) scale(0.94);
 }
 
 @media (max-width: 600px) {
@@ -1906,6 +2016,25 @@ body.modal-open {
    Figma 1:379 pads this one asymmetrically: 48px top, 104px bottom. */
 .imob-feature-history {
   padding-bottom: 104px;
+  /* setupHistoryPin (desktop only) pins this section — GSAP fixes it in
+     place for the pin's duration, which needs an explicit stacking
+     position below the sticky header (z-index: 40) so the header still
+     renders on top instead of the two fighting over paint order. */
+  position: relative;
+  z-index: 1;
+}
+
+/* Resting state for the pinned scroll-reveal (desktop) and the stagger
+   fallback (mobile): each step is *already there*, just not reached yet —
+   dimmed and slightly out of focus, pulling sharp as the scroll gets to
+   it. Deliberately not a skeleton: placeholder bars read as "content is
+   loading" (i.e. something's broken/slow), where this reads as "there's
+   more below". Mirrors the blur-to-focus treatment setupMaskTitles
+   already uses for headlines. */
+[data-fx="history-item"] {
+  opacity: 0.22;
+  transform: translateY(14px);
+  filter: blur(2.5px);
 }
 
 .imob-feature-history__visual {
@@ -1932,6 +2061,7 @@ body.modal-open {
 .imob-history-item {
   position: relative;
 }
+
 
 /* Figma 1:398 — a 2px, 45px-tall run that stops right at the next step,
    so it reads as a trail between dots rather than a continuous rail. */
@@ -2292,6 +2422,25 @@ body.modal-open {
   height: 100%;
 }
 
+/* The lit trail. Same box as the discs, but it lives inside the rotating
+   beam group — its angular gradient carries the fade itself (opaque at the
+   pointer, transparent at the tail), so rotation alone produces the sweep.
+   See RADAR_TRAIL_SVG in HowItWorks.tsx. */
+.imob-how-radar__trail {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 300px;
+  height: 150px;
+  transform: translateX(-50%);
+}
+
+.imob-how-radar__trail svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 .imob-how-radar__rings {
   position: absolute;
   left: 47px;
@@ -2308,15 +2457,38 @@ body.modal-open {
   height: 274.053px;
 }
 
+/* The turning group: spans the whole stage so its origin can be stated as
+   the dish centre (170, 150) directly. ScrollFx rotates THIS, so the wedge
+   and its pointer spokes always move as one piece. */
+.imob-how-radar__beam {
+  position: absolute;
+  inset: 0;
+  transform-origin: 170px 150px;
+}
+
+/* Same box as __rings — they came out of Figma as one export. */
+.imob-how-radar__spokes {
+  position: absolute;
+  left: 47px;
+  top: -0.553px;
+  width: 245px;
+  height: 273.553px;
+}
+
+.imob-how-radar__spokes img {
+  position: absolute;
+  left: -1.005px;
+  top: -0.492px;
+  width: 247px;
+  height: 274.053px;
+}
+
 .imob-how-radar__sweep {
   position: absolute;
   left: 168.5px;
   top: 27.947px;
   width: 106.5px;
   height: 123.5px;
-  /* Dish centre (170, 150) expressed inside this box, so ScrollFx can swing
-     the wedge around the radar's origin rather than its own middle. */
-  transform-origin: 1.5px 122.053px;
 }
 
 .imob-how-radar__sweep img {
@@ -2474,6 +2646,13 @@ body.modal-open {
 
   .imob-how__grid {
     flex-direction: column;
+    /* `flex-start` above is a *cross-axis* rule: on desktop that axis is
+       vertical (Figma's ragged card bottoms), but once this stacks it
+       becomes the horizontal one and the cards would shrink to their
+       content. Combined with `container-type: inline-size` — which sizes
+       an element without consulting its contents — they collapse to ~31px
+       and the art scales to 0. Stretch them back to full width here. */
+    align-items: stretch;
   }
 }
 
@@ -2603,7 +2782,16 @@ body.modal-open {
 
   .imob-testimonial-card,
   .imob-testimonial-card--featured {
-    min-height: 0;
+    /* Cancels the 340px floor from the 1180px breakpoint — but `auto`, not
+       0. These cards use `flex: 1 0 0` (flex-basis: 0), and a flex item's
+       *default* min-height is `auto` (≈ its content's natural size) —
+       that's what stops it from being crushed below what its own text
+       needs. `min-height: 0` was overriding that default protection
+       instead of just canceling the 340px floor, so the flex algorithm
+       sized each card by the column's available space rather than its
+       quote's actual height — text overflowed past the card's bottom
+       edge and bled into the next one. */
+    min-height: auto;
   }
 }
 
@@ -2690,5 +2878,80 @@ body.modal-open {
 
   .imob-cta__title {
     font-size: clamp(26px, 6vw, 34px);
+  }
+}
+/* ============================================================
+   TOUCH TARGETS
+   WCAG 2.5.5 / platform HIG both put the minimum tap target at
+   44px. Scoped to `pointer: coarse` so this only applies to real
+   touch input — a narrow desktop window keeps the Figma sizing.
+   ============================================================ */
+@media (pointer: coarse) {
+  /* Hamburger: the single most important control on mobile. */
+  .imob-nav-toggle {
+    width: 44px;
+    height: 44px;
+  }
+
+  /* Every button, including the hero pair that lands at 43px. */
+  .imob-btn {
+    min-height: 44px;
+  }
+
+  /* Feature-section CTAs and the mobile menu's own button. */
+  .imob-btn--sm,
+  .imob-btn--header {
+    height: 44px;
+  }
+
+  /* Logo lockups are wide but only ~20px tall. */
+  .imob-header__logo,
+  .imob-footer__logo {
+    position: relative;
+  }
+
+  /* -14px clears 44px on the shorter of the two (the 17px footer lockup). */
+  .imob-header__logo::after,
+  .imob-footer__logo::after {
+    content: '';
+    position: absolute;
+    inset: -14px 0;
+  }
+
+  .cookie__actions .btn {
+    min-height: 44px;
+  }
+
+  /* Footer legal links sit only 20px tall. Grow the hit area with an
+     overlay instead of padding so the footer's visual rhythm is
+     untouched; the 12px gap between them stays clear of overlap. */
+  .imob-footer__links a {
+    position: relative;
+  }
+
+  .imob-footer__links a::after {
+    content: '';
+    position: absolute;
+    inset: -12px -4px;
+  }
+
+  /* 18px social icons can't be grown by an overlay without the two
+     hit areas colliding, so give them real 44px boxes and tighten
+     the gap to compensate. */
+  .imob-footer__social {
+    gap: 4px;
+  }
+
+  .imob-footer__social a {
+    width: 44px;
+    height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .imob-footer__social a svg {
+    width: 18px;
+    height: 18px;
   }
 }

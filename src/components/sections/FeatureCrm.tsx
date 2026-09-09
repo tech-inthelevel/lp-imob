@@ -1,12 +1,11 @@
 'use client';
 
 import { useI18n } from '@/lib/i18n/context';
-import { useContactModal } from '@/lib/contact-modal/context';
+import { buildSignUpUrl, trackSignUpClick } from '@/lib/analytics';
 import { buildWhatsAppUrl } from '@/lib/whatsapp';
 
 export function FeatureCrm() {
-  const { t } = useI18n();
-  const { open } = useContactModal();
+  const { t, language } = useI18n();
   const whatsappHref = buildWhatsAppUrl(t('whatsapp.consultText'));
 
   return (
@@ -21,8 +20,8 @@ export function FeatureCrm() {
             black-and-white pixelated look only appears in sync with the
             green tint — never before it, never permanently missing. */}
         <div className="imob-feature-crm__photoframe">
-          <img className="imob-feature-crm__photo-full" src="/assets/imob/crm-photo-master.png" alt="" />
-          <img className="imob-feature-crm__photo-dots" src="/assets/imob/crm-photo-dots.png" alt="" />
+          <img className="imob-feature-crm__photo-full" src="/assets/imob/crm-photo-master.png" alt="" loading="lazy" decoding="async" />
+          <img className="imob-feature-crm__photo-dots" src="/assets/imob/crm-photo-dots.png" alt="" loading="lazy" decoding="async" />
         </div>
         {/* Green panel and scanline are siblings of the photo, not children:
             in Figma (nodes 1:345 / 1:346) they span from the card's own left
@@ -41,7 +40,7 @@ export function FeatureCrm() {
           </span>
           <span className="imob-feature-crm__label">
             <span className="imob-feature-crm__label__tag">
-              <img src="/assets/imob/icon-loading.svg" alt="" />
+              <img src="/assets/imob/icon-loading.svg" alt="" loading="lazy" decoding="async" />
               {t('feature2.tag4')}
             </span>
           </span>
@@ -50,14 +49,14 @@ export function FeatureCrm() {
 
       <div className="imob-feature__text" data-fx="slide-right">
         <div className="imob-feature__icon" aria-hidden="true">
-          <img src="/assets/imob/icon-filter.svg" alt="" />
+          <img src="/assets/imob/icon-filter.svg" alt="" loading="lazy" decoding="async" />
         </div>
         <p className="imob-feature__title">{t('feature2.title')}</p>
         <p className="imob-feature__body">{t('feature2.body')}</p>
         <div className="imob-feature__actions">
-          <button type="button" className="imob-btn imob-btn--primary imob-btn--sm" onClick={() => open('feature_crm')}>
+          <a className="imob-btn imob-btn--primary imob-btn--sm" href={buildSignUpUrl('feature_crm', language)} onClick={() => trackSignUpClick('feature_crm')}>
             {t('feature2.cta1')}
-          </button>
+          </a>
           <a
             className="imob-btn imob-btn--secondary imob-btn--sm"
             href={whatsappHref}

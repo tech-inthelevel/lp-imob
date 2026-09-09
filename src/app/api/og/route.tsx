@@ -1,7 +1,9 @@
 import { ImageResponse } from 'next/og';
 import type { NextRequest } from 'next/server';
 
-export const runtime = 'edge';
+// Runtime is deliberately left at the default (nodejs). `runtime = 'edge'`
+// is deprecated in this Next version — the build warns about it — and
+// `next/og` no longer needs Edge to render an ImageResponse.
 
 // ---------------------------------------------------------------------------
 // Translated content for the OG image

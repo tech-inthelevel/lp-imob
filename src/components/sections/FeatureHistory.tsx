@@ -1,7 +1,7 @@
 'use client';
 
 import { useI18n } from '@/lib/i18n/context';
-import { useContactModal } from '@/lib/contact-modal/context';
+import { buildSignUpUrl, trackSignUpClick } from '@/lib/analytics';
 import { buildWhatsAppUrl } from '@/lib/whatsapp';
 
 const TIMELINE = [
@@ -13,22 +13,21 @@ const TIMELINE = [
 ] as const;
 
 export function FeatureHistory() {
-  const { t } = useI18n();
-  const { open } = useContactModal();
+  const { t, language } = useI18n();
   const whatsappHref = buildWhatsAppUrl(t('whatsapp.consultText'));
 
   return (
     <section className="imob-feature imob-feature-history">
       <div className="imob-feature__text" data-fx="slide-left">
         <div className="imob-feature__icon" aria-hidden="true">
-          <img src="/assets/imob/icon-shield.svg" alt="" />
+          <img src="/assets/imob/icon-shield.svg" alt="" loading="lazy" decoding="async" />
         </div>
         <p className="imob-feature__title">{t('feature5.title')}</p>
         <p className="imob-feature__body">{t('feature5.body')}</p>
         <div className="imob-feature__actions">
-          <button type="button" className="imob-btn imob-btn--primary imob-btn--sm" onClick={() => open('feature_history')}>
+          <a className="imob-btn imob-btn--primary imob-btn--sm" href={buildSignUpUrl('feature_history', language)} onClick={() => trackSignUpClick('feature_history')}>
             {t('feature5.cta1')}
-          </button>
+          </a>
           <a
             className="imob-btn imob-btn--secondary imob-btn--sm"
             href={whatsappHref}
@@ -40,7 +39,7 @@ export function FeatureHistory() {
         </div>
       </div>
 
-      <div className="imob-feature__visual imob-feature-history__visual" data-fx="zoom-in" data-parallax="0.1">
+      <div className="imob-feature__visual imob-feature-history__visual">
         {TIMELINE.map((item, i) => {
           // Figma 1:404: the connector running *into* a not-yet-done step is
           // drawn in neutral, not green — the trail stops where the AI does.
@@ -49,6 +48,7 @@ export function FeatureHistory() {
           return (
             <div
               key={item.titleKey}
+              data-fx="history-item"
               className={[
                 'imob-history-item',
                 item.done ? '' : 'imob-history-item--pending',
@@ -57,7 +57,7 @@ export function FeatureHistory() {
             >
               <div className="imob-history-item__row">
                 <span className="imob-history-item__dot" aria-hidden="true">
-                  <img src={`/assets/imob/${item.done ? 'icon-check-mark' : 'icon-clock'}.svg`} alt="" />
+                  <img src={`/assets/imob/${item.done ? 'icon-check-mark' : 'icon-clock'}.svg`} alt="" loading="lazy" decoding="async" />
                 </span>
                 <p className="imob-history-item__title">{t(item.titleKey)}</p>
               </div>

@@ -41,6 +41,8 @@ const META: Record<LanguageCode, {
   ogLocale: string;
   twitterTitle: string;
   twitterDescription: string;
+  /** Mirrors the feature sections actually rendered on the page. */
+  featureList: string[];
 }> = {
   pt: {
     htmlLang: 'pt-BR',
@@ -52,6 +54,15 @@ const META: Record<LanguageCode, {
     ogLocale: 'pt_BR',
     twitterTitle: 'JSYNQ Imob — Workspace com IA para Corretores de Elite',
     twitterDescription: 'Enquanto você mostra um imóvel, o seu próximo lead já está qualificado.',
+    featureList: [
+      'Resposta automática por IA em WhatsApp, Instagram e SMS',
+      'Qualificação e triagem de leads por IA',
+      'CRM com atualização automática do funil',
+      'Follow-up automatizado até a decisão de compra',
+      'Relatórios e insights de origem e conversão de leads',
+      'Timeline completa de histórico por lead',
+      'Agendamento automático de visitas',
+    ],
   },
   en: {
     htmlLang: 'en',
@@ -63,6 +74,15 @@ const META: Record<LanguageCode, {
     ogLocale: 'en_US',
     twitterTitle: 'JSYNQ Imob — AI Workspace for Elite Realtors',
     twitterDescription: 'While you show a property, your next lead is already qualified.',
+    featureList: [
+      'Automatic AI replies on WhatsApp, Instagram and SMS',
+      'AI lead qualification and screening',
+      'CRM with automatic pipeline updates',
+      'Automated follow-up through to the buying decision',
+      'Reports and insights on lead source and conversion',
+      'Full history timeline per lead',
+      'Automatic visit scheduling',
+    ],
   },
   es: {
     htmlLang: 'es',
@@ -74,6 +94,15 @@ const META: Record<LanguageCode, {
     ogLocale: 'es_ES',
     twitterTitle: 'JSYNQ Imob — Workspace con IA para Corredores de Élite',
     twitterDescription: 'Mientras muestras una propiedad, tu próximo lead ya está calificado.',
+    featureList: [
+      'Respuestas automáticas con IA en WhatsApp, Instagram y SMS',
+      'Calificación y filtrado de leads con IA',
+      'CRM con actualización automática del embudo',
+      'Seguimiento automatizado hasta la decisión de compra',
+      'Informes e insights de origen y conversión de leads',
+      'Historial completo por lead en una única timeline',
+      'Agendamiento automático de visitas',
+    ],
   },
 };
 
@@ -81,8 +110,69 @@ function isLang(v: string | undefined): v is LanguageCode {
   return v === 'pt' || v === 'en' || v === 'es';
 }
 
-// TODO(figma): add JSON-LD (Organization / RealEstateAgent / FAQPage) once the
-// real-estate positioning and FAQ content are final.
+/**
+ * Structured data. This is what AI answer engines and Google's rich results
+ * actually parse, so it's the highest-leverage SEO surface on the page.
+ *
+ * Deliberately conservative: no `aggregateRating`, no `offers`, no `sameAs`.
+ * Structured data has to describe things that are true and visible on the
+ * page — inventing a rating, a price, or a social profile the site doesn't
+ * actually link to is exactly what gets a site's rich results pulled. The
+ * footer's social hrefs are still placeholders, so they stay out until they
+ * point somewhere real. Same reason there's no FAQPage: the page has no FAQ.
+ */
+function buildJsonLd(lang: LanguageCode, m: (typeof META)[LanguageCode]) {
+  const orgId = `${SITE_URL}/#organization`;
+  const siteId = `${SITE_URL}/#website`;
+
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'Organization',
+        '@id': orgId,
+        name: 'JSYNQ',
+        url: SITE_URL,
+        logo: {
+          '@type': 'ImageObject',
+          url: `${SITE_URL}/assets/jsynq-logo-horizontal.svg`,
+        },
+      },
+      {
+        '@type': 'WebSite',
+        '@id': siteId,
+        url: SITE_URL,
+        name: m.title,
+        description: m.description,
+        publisher: { '@id': orgId },
+        inLanguage: m.htmlLang,
+      },
+      {
+        '@type': 'WebPage',
+        '@id': `${SITE_URL}/#webpage`,
+        url: `${SITE_URL}/`,
+        name: m.title,
+        description: m.description,
+        isPartOf: { '@id': siteId },
+        about: { '@id': orgId },
+        inLanguage: m.htmlLang,
+        primaryImageOfPage: { '@type': 'ImageObject', url: `${SITE_URL}/api/og?lang=${lang}` },
+      },
+      {
+        '@type': 'SoftwareApplication',
+        name: 'JSYNQ Imob',
+        applicationCategory: 'BusinessApplication',
+        applicationSubCategory: 'CRM',
+        operatingSystem: 'Web',
+        url: `${SITE_URL}/`,
+        description: m.description,
+        inLanguage: m.htmlLang,
+        provider: { '@id': orgId },
+        featureList: m.featureList,
+      },
+    ],
+  };
+}
 
 // NOTA: Em vez de usar `export const metadata` (que dispara o Next a criar
 // um <MetadataWrapper> com Suspense boundary — fonte do mismatch de hidratação
@@ -160,6 +250,14 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <link rel="apple-touch-icon" href="/favicon.svg" />
         <link rel="manifest" href="/manifest.json" />
+
+        {/* Structured data — see buildJsonLd for why it's scoped the way it
+            is. JSON.stringify (not a template literal) so the payload can't
+            break out of the script tag. */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(buildJsonLd(lang, m)) }}
+        />
       </head>
       <body>
         <I18nProvider>

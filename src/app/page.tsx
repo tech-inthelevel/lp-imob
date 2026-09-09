@@ -3,8 +3,10 @@ import { SvgSprites } from '@/components/ui/SvgSprites';
 import { WhatsAppFab } from '@/components/WhatsAppFab';
 import { RevealManager } from '@/components/RevealManager';
 import { ScrollFx } from '@/components/ScrollFx';
+import { TextReveal } from '@/components/TextReveal';
 import { Nav } from '@/components/sections/Nav';
 import { Hero } from '@/components/sections/Hero';
+import { HeroCasa } from '@/components/sections/HeroCasa';
 import { Partners } from '@/components/sections/Partners';
 import { FeaturesIntro } from '@/components/sections/FeaturesIntro';
 import { FeatureAiResponse } from '@/components/sections/FeatureAiResponse';
@@ -30,7 +32,7 @@ export default async function Page() {
       <Nav />
 
       <main id="top">
-        <Hero />
+        <Hero casa={<HeroCasa />} />
         <Partners />
         <FeaturesIntro />
         <FeatureAiResponse />
@@ -48,6 +50,7 @@ export default async function Page() {
 
       <RevealManager />
       <ScrollFx />
+      <TextReveal />
     </>
   );
 }

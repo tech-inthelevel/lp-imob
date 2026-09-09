@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useI18n } from '@/lib/i18n/context';
 import { LanguageSelector } from '@/components/ui/LanguageSelector';
-import { useContactModal } from '@/lib/contact-modal/context';
+import { buildSignUpUrl, trackSignUpClick } from '@/lib/analytics';
 
 const NAV_LINKS: { href: string; key: string }[] = [
   { href: '#solucoes', key: 'nav.solucoes' },
@@ -12,8 +12,7 @@ const NAV_LINKS: { href: string; key: string }[] = [
 ];
 
 export function Nav() {
-  const { t } = useI18n();
-  const { open: openContact } = useContactModal();
+  const { t, language } = useI18n();
   const [open, setOpen] = useState(false);
 
   return (
@@ -35,13 +34,13 @@ export function Nav() {
 
         <div className="imob-header__actions">
           <LanguageSelector />
-          <button
-            type="button"
+          <a
             className="imob-btn imob-btn--primary imob-btn--header"
-            onClick={() => openContact('nav')}
+            href={buildSignUpUrl('nav', language)}
+            onClick={() => trackSignUpClick('nav')}
           >
             {t('nav.cta')}
-          </button>
+          </a>
           <button
             type="button"
             className="imob-nav-toggle"
@@ -64,16 +63,16 @@ export function Nav() {
           </a>
         ))}
         <div className="imob-nav-mobile__actions">
-          <button
-            type="button"
+          <a
             className="imob-btn imob-btn--primary imob-btn--block imob-btn--sm"
+            href={buildSignUpUrl('nav_mobile', language)}
             onClick={() => {
               setOpen(false);
-              openContact('nav_mobile');
+              trackSignUpClick('nav_mobile');
             }}
           >
             {t('nav.cta')}
-          </button>
+          </a>
         </div>
       </div>
     </header>
