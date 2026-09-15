@@ -10,7 +10,7 @@ export function FeatureReports() {
       <div className="imob-feature__visual imob-feature-reports__visual" data-parallax="0.12">
         <div className="imob-feature-reports__stage" data-fx="reports">
           <div className="imob-feature-reports__frame">
-            <img src="/assets/imob/reports-dashboard.png" alt="" loading="lazy" decoding="async" />
+            <img src="/assets/imob/reports-dashboard.webp" alt="" loading="lazy" decoding="async" />
             <span className="imob-feature-reports__glare" aria-hidden="true"></span>
           </div>
         </div>

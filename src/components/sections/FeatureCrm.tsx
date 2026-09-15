@@ -20,8 +20,8 @@ export function FeatureCrm() {
             black-and-white pixelated look only appears in sync with the
             green tint — never before it, never permanently missing. */}
         <div className="imob-feature-crm__photoframe">
-          <img className="imob-feature-crm__photo-full" src="/assets/imob/crm-photo-master.png" alt="" loading="lazy" decoding="async" />
-          <img className="imob-feature-crm__photo-dots" src="/assets/imob/crm-photo-dots.png" alt="" loading="lazy" decoding="async" />
+          <img className="imob-feature-crm__photo-full" src="/assets/imob/crm-photo-master.webp" alt="" loading="lazy" decoding="async" />
+          <img className="imob-feature-crm__photo-dots" src="/assets/imob/crm-photo-dots.webp" alt="" loading="lazy" decoding="async" />
         </div>
         {/* Green panel and scanline are siblings of the photo, not children:
             in Figma (nodes 1:345 / 1:346) they span from the card's own left

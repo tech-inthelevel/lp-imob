@@ -17,10 +17,10 @@ export function FeatureAiResponse() {
           <img src="/assets/imob/jsynq-ai-icon.svg" alt="" loading="lazy" decoding="async" />
         </div>
 
-        <img className="imob-feature-ai__avatar" style={{ left: '82.465%', top: '15.625%' }} src="/assets/imob/avatar-1.png" alt="" aria-hidden="true" loading="lazy" decoding="async" />
-        <img className="imob-feature-ai__avatar" style={{ left: '52.813%', top: '57.813%' }} src="/assets/imob/avatar-2.png" alt="" aria-hidden="true" loading="lazy" decoding="async" />
-        <img className="imob-feature-ai__avatar" style={{ left: '86.563%', top: '57.031%' }} src="/assets/imob/avatar-3.png" alt="" aria-hidden="true" loading="lazy" decoding="async" />
-        <img className="imob-feature-ai__avatar" style={{ left: '58.576%', top: '39.063%' }} src="/assets/imob/avatar-4.png" alt="" aria-hidden="true" loading="lazy" decoding="async" />
+        <img className="imob-feature-ai__avatar" style={{ left: '82.465%', top: '15.625%' }} src="/assets/imob/avatar-1.webp" alt="" aria-hidden="true" loading="lazy" decoding="async" />
+        <img className="imob-feature-ai__avatar" style={{ left: '52.813%', top: '57.813%' }} src="/assets/imob/avatar-2.webp" alt="" aria-hidden="true" loading="lazy" decoding="async" />
+        <img className="imob-feature-ai__avatar" style={{ left: '86.563%', top: '57.031%' }} src="/assets/imob/avatar-3.webp" alt="" aria-hidden="true" loading="lazy" decoding="async" />
+        <img className="imob-feature-ai__avatar" style={{ left: '58.576%', top: '39.063%' }} src="/assets/imob/avatar-4.webp" alt="" aria-hidden="true" loading="lazy" decoding="async" />
 
         <span className="imob-feature-ai__pill imob-feature-ai__pill--whatsapp" style={{ left: '43.85%', top: '10.5%' }}>
           <img src="/assets/imob/icon-whatsapp.svg" alt="" aria-hidden="true" loading="lazy" decoding="async" />

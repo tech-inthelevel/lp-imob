@@ -44,7 +44,7 @@ export function Testimonials() {
               &ldquo;{withHighlight(t(card.quoteKey))}&rdquo;
             </blockquote>
             <figcaption className="imob-testimonial-card__author">
-              <img src={`/assets/imob/${card.avatar}.png`} alt="" width={48} height={48} loading="lazy" decoding="async" />
+              <img src={`/assets/imob/${card.avatar}.webp`} alt="" width={48} height={48} loading="lazy" decoding="async" />
               <div>
                 <p className="imob-testimonial-card__name">{t(card.nameKey)}</p>
                 <p className="imob-testimonial-card__role">{t(card.roleKey)}</p>

@@ -44,97 +44,136 @@ export function ScrollFx() {
 
     const mm = gsap.matchMedia();
 
-    mm.add(
-      {
-        reduceMotion: '(prefers-reduced-motion: reduce)',
-        desktop: '(prefers-reduced-motion: no-preference) and (min-width: 901px)',
-        mobile: '(prefers-reduced-motion: no-preference) and (max-width: 900px)',
-      },
-      (context) => {
-        const { reduceMotion, desktop } = context.conditions as {
-          reduceMotion: boolean;
-          desktop: boolean;
-          mobile: boolean;
-        };
+    // Every trigger this creates is for a section below the hero — there's
+    // nothing on screen for any of it to do until the visitor actually
+    // scrolls that far. Building all of it (mm.add's condition evaluation,
+    // a dozen+ ScrollTrigger.create calls, several getBoundingClientRect
+    // reads apiece) synchronously during mount taxes the main thread during
+    // exactly the window Lighthouse's Total Blocking Time measures, for
+    // zero visible benefit — nothing it produces is paintable yet anyway.
+    // Deferred to the browser's idle time instead: requestIdleCallback
+    // typically still fires within a handful of milliseconds on a page
+    // that's done with its critical work, it's just no longer *inside* that
+    // critical work. `timeout` is a ceiling so it can't be starved
+    // indefinitely if the thread stays busy. Safari has no
+    // requestIdleCallback, hence the setTimeout fallback.
+    //
+    // The whole mm.add call — condition evaluation, every setup*() call,
+    // and the ScrollTrigger.refresh() that used to be a separate statement
+    // right after it — moves inside this one callback as a single unit.
+    // GSAP's matchMedia context capture wraps whatever runs synchronously
+    // inside this function; splitting it across two ticks would risk
+    // leaving the second half untracked (so it wouldn't auto-revert if the
+    // mobile/desktop breakpoint changes) — moving the callback wholesale
+    // avoids that split entirely. The relative order every comment below
+    // depends on (particularly setupHistoryPin needing to run before this
+    // refresh) is unchanged, just later.
+    const runIdle: (cb: () => void) => number =
+      typeof window !== 'undefined' && 'requestIdleCallback' in window
+        ? (cb) => window.requestIdleCallback(cb, { timeout: 150 })
+        : (cb) => window.setTimeout(cb, 100);
+    const cancelIdle: (id: number) => void =
+      typeof window !== 'undefined' && 'cancelIdleCallback' in window
+        ? (id) => window.cancelIdleCallback(id)
+        : (id) => window.clearTimeout(id);
 
-        if (reduceMotion) {
-          // Two calls, deliberately. `clearProps` registers at priority -10
-          // and GSAP renders PropTweens in descending priority, so pairing
-          // it with other props in ONE call means clearProps runs last and
-          // its `style.cssText = ""` wipes them right back off — leaving
-          // the stylesheet's `opacity: 0` FOUC guards in force and the page
-          // invisible. Clear first, then state the resting values.
-          const restingFx = { opacity: 1, x: 0, y: 0, scale: 1, rotate: 0, filter: 'none' };
+    const idleId = runIdle(() => {
+      mm.add(
+        {
+          reduceMotion: '(prefers-reduced-motion: reduce)',
+          desktop: '(prefers-reduced-motion: no-preference) and (min-width: 901px)',
+          mobile: '(prefers-reduced-motion: no-preference) and (max-width: 900px)',
+        },
+        (context) => {
+          const { reduceMotion, desktop } = context.conditions as {
+            reduceMotion: boolean;
+            desktop: boolean;
+            mobile: boolean;
+          };
 
-          gsap.set('[data-fx]', { clearProps: 'all' });
-          gsap.set('[data-fx]', restingFx);
-          // Pieces inside the AI-assembly card aren't `[data-fx]` targets
-          // themselves (see setupAiAssembly) — reset them explicitly too.
-          const aiPieces =
-            '.imob-feature-ai__avatar, .imob-feature-ai__pill, .imob-feature-ai__core, .imob-feature-ai__line';
-          gsap.set(aiPieces, { clearProps: 'all' });
-          gsap.set(aiPieces, restingFx);
-          // Freeze the CRM scan at its locked position instead of animating
-          // it. The sharp photo piece is static/always visible, but the
-          // dots piece is scan-revealed — lock it fully open too (its own
-          // box IS the swept region, so 100% local = fully revealed).
-          gsap.set('.imob-feature-crm__scanoverlay', {
-            clipPath: `polygon(0 0, ${CRM_SCAN_LOCK}% 0, ${CRM_SCAN_LOCK}% 100%, 0 100%)`,
-          });
-          gsap.set('.imob-feature-crm__photo-dots', {
-            clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)',
-          });
-          gsap.set('.imob-feature-crm__scanline', { left: `${CRM_SCAN_LOCK}%` });
-          // The followup connectors don't carry [data-fx] (their length is
-          // measured, not just toggled), so the blanket reset above misses
-          // them: land on the static dotted line, skip the draw-in ghost.
-          gsap.set('.imob-followup-line__flow', { opacity: 1, strokeDasharray: FOLLOWUP_FLOW_DASH, strokeDashoffset: 0 });
-          gsap.set('.imob-followup-line__reveal', { opacity: 0 });
-          gsap.set('.imob-followup-line__port', { opacity: 1 });
-          return;
-        }
+          if (reduceMotion) {
+            // Two calls, deliberately. `clearProps` registers at priority -10
+            // and GSAP renders PropTweens in descending priority, so pairing
+            // it with other props in ONE call means clearProps runs last and
+            // its `style.cssText = ""` wipes them right back off — leaving
+            // the stylesheet's `opacity: 0` FOUC guards in force and the page
+            // invisible. Clear first, then state the resting values.
+            const restingFx = { opacity: 1, x: 0, y: 0, scale: 1, rotate: 0, filter: 'none' };
 
-        setupHeroExit();
-        setupAiAssembly();
-        setupCrmScan();
-        setupZoomIns();
-        setupSlides();
-        setupReports();
-        setupCardGroups();
-        setupHowConnect();
-        setupHowRadar();
-        setupHowAgenda();
-        setupFollowupFlow();
-        setupPulse();
+            gsap.set('[data-fx]', { clearProps: 'all' });
+            gsap.set('[data-fx]', restingFx);
+            // Pieces inside the AI-assembly card aren't `[data-fx]` targets
+            // themselves (see setupAiAssembly) — reset them explicitly too.
+            const aiPieces =
+              '.imob-feature-ai__avatar, .imob-feature-ai__pill, .imob-feature-ai__core, .imob-feature-ai__line';
+            gsap.set(aiPieces, { clearProps: 'all' });
+            gsap.set(aiPieces, restingFx);
+            // Freeze the CRM scan at its locked position instead of animating
+            // it. The sharp photo piece is static/always visible, but the
+            // dots piece is scan-revealed — lock it fully open too (its own
+            // box IS the swept region, so 100% local = fully revealed).
+            gsap.set('.imob-feature-crm__scanoverlay', {
+              clipPath: `polygon(0 0, ${CRM_SCAN_LOCK}% 0, ${CRM_SCAN_LOCK}% 100%, 0 100%)`,
+            });
+            gsap.set('.imob-feature-crm__photo-dots', {
+              clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)',
+            });
+            gsap.set('.imob-feature-crm__scanline', { left: `${CRM_SCAN_LOCK}%` });
+            // The followup connectors don't carry [data-fx] (their length is
+            // measured, not just toggled), so the blanket reset above misses
+            // them: land on the static dotted line, skip the draw-in ghost.
+            gsap.set('.imob-followup-line__flow', { opacity: 1, strokeDasharray: FOLLOWUP_FLOW_DASH, strokeDashoffset: 0 });
+            gsap.set('.imob-followup-line__reveal', { opacity: 0 });
+            gsap.set('.imob-followup-line__port', { opacity: 1 });
+            return;
+          }
 
-        if (desktop) {
-          setupParallax();
-          setupHistoryPin();
-        } else {
-          // Pinning depends on stable viewport-height math — mobile
-          // browsers resize the viewport mid-scroll as their address bar
-          // hides/shows, which is a well-known source of pin jank. Same
-          // call already made for setupParallax above: skip the pin
-          // entirely there and fall back to a plain staggered reveal.
-          setupHistorySimple();
-        }
-      },
-    );
+          setupHeroExit();
+          setupAiAssembly();
+          setupCrmScan();
+          setupZoomIns();
+          setupSlides();
+          setupReports();
+          setupCardGroups();
+          setupHowConnect();
+          setupHowRadar();
+          setupHowAgenda();
+          setupFollowupFlow();
+          setupPulse();
 
-    // ScrollFx mounts via useEffect — after hydration, which is after the
-    // browser's own `load` event (and GSAP's automatic on-load refresh)
-    // have already fired. Every ScrollTrigger above still gets an initial
-    // position from its own creation-time calc, but setupHistoryPin's
-    // pin-spacer specifically depends on the full-page layout pass a real
-    // refresh does — without this, it's created at its unpinned natural
-    // height (measured: 593px instead of the ~1763px it needs), so the
-    // pinned scroll distance silently collapses to zero.
-    ScrollTrigger.refresh();
+          if (desktop) {
+            setupParallax();
+            setupHistoryPin();
+          } else {
+            // Pinning depends on stable viewport-height math — mobile
+            // browsers resize the viewport mid-scroll as their address bar
+            // hides/shows, which is a well-known source of pin jank. Same
+            // call already made for setupParallax above: skip the pin
+            // entirely there and fall back to a plain staggered reveal.
+            setupHistorySimple();
+          }
+
+          // ScrollFx's triggers are created well after the browser's own
+          // `load` event (and GSAP's automatic on-load refresh) have fired —
+          // true before this deferral and still true now, just later.
+          // setupHistoryPin's pin-spacer specifically depends on the full
+          // -page layout pass a real refresh does — without this, it's
+          // created at its unpinned natural height (measured: 593px instead
+          // of the ~1763px it needs), so the pinned scroll distance silently
+          // collapses to zero. Must run after every setup*() call above,
+          // which is why it moved inside this callback rather than staying
+          // a separate statement after `mm.add` — see the comment at this
+          // function's `runIdle` for why the two can't be split apart.
+          ScrollTrigger.refresh();
+        },
+      );
+    });
 
     return () => {
       navTrigger.kill();
       window.removeEventListener('resize', syncHeaderHeight);
       mm.revert();
+      cancelIdle(idleId);
     };
   }, []);
 

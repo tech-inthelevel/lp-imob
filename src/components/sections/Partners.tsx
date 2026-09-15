@@ -22,7 +22,7 @@ export function Partners() {
         {LOGOS.map((logo, i) => (
           <img
             key={logo.slug}
-            src={`/assets/imob/${logo.slug}.png`}
+            src={`/assets/imob/${logo.slug}.webp`}
             alt={logo.alt}
             width={logo.width}
             height={logo.height}

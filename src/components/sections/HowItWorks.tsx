@@ -204,8 +204,8 @@ export function HowItWorks() {
                 <img src={`${ART}/c2-icon-close.svg`} alt="" loading="lazy" decoding="async" />
               </span>
 
-              <img className="imob-how-radar__avatar" style={{ left: 268.5, top: 82.45 }} src={`${ART}/c2-avatar-a.png`} alt="" width={24} height={24} loading="lazy" decoding="async" />
-              <img className="imob-how-radar__avatar" style={{ left: 212.5, top: 132.45 }} src={`${ART}/c2-avatar-b.png`} alt="" width={24} height={24} loading="lazy" decoding="async" />
+              <img className="imob-how-radar__avatar" style={{ left: 268.5, top: 82.45 }} src={`${ART}/c2-avatar-a.webp`} alt="" width={24} height={24} loading="lazy" decoding="async" />
+              <img className="imob-how-radar__avatar" style={{ left: 212.5, top: 132.45 }} src={`${ART}/c2-avatar-b.webp`} alt="" width={24} height={24} loading="lazy" decoding="async" />
             </div>
           </div>
           <h3 className="imob-step-card__title">

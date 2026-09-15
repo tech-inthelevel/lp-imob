@@ -75,7 +75,7 @@ export function FeatureFollowup() {
             </div>
             <div className="imob-followup-card__body">
               <span className="imob-followup-card__icon">
-                <img className="imob-followup-avatar" src="/assets/imob/followup-avatar.png" alt="" loading="lazy" decoding="async" />
+                <img className="imob-followup-avatar" src="/assets/imob/followup-avatar.webp" alt="" loading="lazy" decoding="async" />
               </span>
               <span>
                 <span className="imob-followup-card__label">Run Workspace Agent</span>
