@@ -34,6 +34,20 @@ const nextConfig: NextConfig = {
           { key: 'Cache-Control', value: 'public, max-age=3600' },
         ],
       },
+      {
+        // The hero house SVG loads via <object> (see HeroCasa.tsx) so its CSS
+        // draw-on animation actually plays — <img src> freezes it. `<object>`
+        // embeds same-origin content as its own document, which is exactly
+        // what the blanket X-Frame-Options: DENY above (clickjacking
+        // protection for real pages) also blocks, same-origin or not. This
+        // later, more specific rule overrides it back to SAMEORIGIN for just
+        // this one static asset — last matching rule wins for a given header
+        // key on the same path (see Next's headers() override behavior) —
+        // so the illustration can embed itself while every other response,
+        // page or asset, keeps the strict DENY.
+        source: '/assets/imob/hero-casa.svg',
+        headers: [{ key: 'X-Frame-Options', value: 'SAMEORIGIN' }],
+      },
     ];
   },
 };

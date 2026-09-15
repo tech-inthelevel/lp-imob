@@ -6,10 +6,14 @@
  * draws on via stroke-dashoffset, and the tree/bush foliage — exported by Figma as
  * filled contours, which can't be dash-drawn — inks in afterwards in bands.
  *
- * The animation lives in a <style> block inside the SVG, so it still works through
- * the plain <img> in Hero.tsx (no inlining, no JS) and the file stays cacheable.
- * Its clock starts when the browser paints the image, which is why the illustration
- * is no longer a `[data-reveal]` target — the drawing *is* its entrance.
+ * The animation lives in a <style> block inside the SVG, so it still works when
+ * loaded through an <object> in HeroCasa.tsx — NOT a plain <img src>, which
+ * freezes CSS animations inside the SVG on their first frame. <object> embeds
+ * it as its own document instead, so the animation plays AND the file stays a
+ * separate, cacheable request rather than getting inlined into every HTML
+ * response. Its clock starts when the browser paints the object, which is why
+ * the illustration is no longer a `[data-reveal]` target — the drawing *is*
+ * its entrance.
  *
  * Idempotent: re-run it in place after changing the timing knobs below.
  *
